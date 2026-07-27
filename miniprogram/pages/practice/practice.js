@@ -59,7 +59,7 @@ Page({
       return;
     }
 
-    // 预计算选项字母映射（WXML 不支持数组索引表达式）
+    // 预计算选项字母映射（WXML 不支持数组索引表达式和 indexOf）
     const LETTERS = ['A', 'B', 'C', 'D', 'E', 'F'];
     selected.forEach(q => {
       if (q.options) {
@@ -75,6 +75,30 @@ Page({
       startTime: Date.now(),
       correctCount: 0
     });
+    this.buildOptions(selected[0]);
+  },
+
+  // 构建选项视图数据（WXML 不支持 indexOf 和数组索引）
+  buildOptions(question) {
+    const LETTERS = ['A', 'B', 'C', 'D', 'E', 'F'];
+    if (question.type === 'single_choice' && question.options) {
+      this.setData({
+        singleOptions: question.options.map((text, i) => ({
+          letter: LETTERS[i],
+          text: text
+        }))
+      });
+    }
+    if (question.type === 'multi_choice' && question.options) {
+      this.setData({
+        multiOptions: question.options.map((text, i) => ({
+          letter: LETTERS[i],
+          text: text,
+          selected: false,
+          correct: question.answer.indexOf(LETTERS[i]) > -1
+        }))
+      });
+    }
   },
 
   // 选择题 - 单选
@@ -95,7 +119,15 @@ Page({
       selected.push(option);
       selected.sort();
     }
-    this.setData({ selectedOptions: selected });
+    // 同步更新 multiOptions 的 selected 状态
+    let multiOptions = this.data.multiOptions || [];
+    if (multiOptions.length > 0) {
+      multiOptions = multiOptions.map(opt => ({
+        ...opt,
+        selected: selected.indexOf(opt.letter) > -1
+      }));
+    }
+    this.setData({ selectedOptions: selected, multiOptions });
   },
 
   // 填空题输入
@@ -240,8 +272,11 @@ Page({
       isCorrect: false,
       progress: `${nextIndex + 1}/${this.data.questions.length}`,
       fillValues: [],
-      activeBlankIndex: -1
+      activeBlankIndex: -1,
+      singleOptions: [],
+      multiOptions: []
     });
+    this.buildOptions(this.data.questions[nextIndex]);
   },
 
   // 返回首页

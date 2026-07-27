@@ -54,6 +54,70 @@ function generateVariables(variables) {
 // ============================================================
 
 /**
+ * 简单递归下降解析器，替代 Function() 构造函数
+ * 微信小程序运行时禁止使用 Function()
+ * 支持: + - * / () 和数字
+ */
+
+function parseExpression(s) {
+  let pos = 0;
+
+  function skipSpace() {
+    while (pos < s.length && s[pos] === ' ') pos++;
+  }
+
+  function parseNumber() {
+    skipSpace();
+    let str = '';
+    while (pos < s.length && /[\d.]/.test(s[pos])) {
+      str += s[pos];
+      pos++;
+    }
+    return parseFloat(str);
+  }
+
+  function parseFactor() {
+    skipSpace();
+    if (s[pos] === '(') {
+      pos++;
+      const val = parseAddSub();
+      skipSpace();
+      if (s[pos] === ')') pos++;
+      return val;
+    }
+    return parseNumber();
+  }
+
+  function parseMulDiv() {
+    let val = parseFactor();
+    skipSpace();
+    while (pos < s.length && (s[pos] === '*' || s[pos] === '/')) {
+      const op = s[pos];
+      pos++;
+      const right = parseFactor();
+      val = op === '*' ? val * right : val / right;
+      skipSpace();
+    }
+    return val;
+  }
+
+  function parseAddSub() {
+    let val = parseMulDiv();
+    skipSpace();
+    while (pos < s.length && (s[pos] === '+' || s[pos] === '-')) {
+      const op = s[pos];
+      pos++;
+      const right = parseMulDiv();
+      val = op === '+' ? val + right : val - right;
+      skipSpace();
+    }
+    return val;
+  }
+
+  return parseAddSub();
+}
+
+/**
  * 安全求值四则运算表达式
  * @param {string} expr - 表达式，如 "a - b" 或 "(a + b) * c"
  * @param {Object} vars - 变量键值对
@@ -64,7 +128,6 @@ function evaluateExpr(expr, vars) {
   for (const key of Object.keys(vars)) {
     const val = vars[key];
     if (typeof val === 'string') {
-      // 字符串变量不能参与算术运算，直接跳过
       continue;
     }
     code = code.replace(new RegExp('\\b' + key + '\\b', 'g'), val);
@@ -73,7 +136,7 @@ function evaluateExpr(expr, vars) {
   if (!/^[\d+\-*/().\s]+$/.test(code)) {
     throw new Error('Invalid expression: ' + code);
   }
-  return Function('"use strict"; return (' + code + ')')();
+  return parseExpression(code);
 }
 
 /**

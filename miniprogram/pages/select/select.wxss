@@ -31,8 +31,9 @@
   flex: 1; text-align: center; padding: 40rpx 0;
   border-radius: 20rpx; background: #FFF; font-size: 32rpx; font-weight: bold;
   border: 4rpx solid transparent;
+  color: #333;
 }
-.count-item.selected { color: #FFF; }
+.count-item.selected { color: #FFF; background-color: #FF6B35; }
 
 .start-btn { margin: 40rpx 20rpx; }
 .back-btn {

@@ -1,4 +1,5 @@
 .codely-cli/
+.superpowers/
 node_modules/
 miniprogram_npm/
 *.log

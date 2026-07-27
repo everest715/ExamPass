@@ -1,3 +1,0 @@
-# ExamPass Progress Ledger
-
-## Tasks

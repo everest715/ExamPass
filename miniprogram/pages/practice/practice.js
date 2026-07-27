@@ -26,13 +26,26 @@ Page({
 
   onLoad(options) {
     const { grade, subject, chapter, mode, count } = options;
-    const decodedGrade = decodeURIComponent(grade);
-    const decodedSubject = decodeURIComponent(subject);
-    const decodedChapter = decodeURIComponent(chapter);
     const numCount = parseInt(count) || 20;
+    const decodedChapter = chapter ? decodeURIComponent(chapter) : null;
 
     // 加载题目
-    const allQuestions = questionLoader.loadQuestions(decodedGrade, decodedSubject);
+    let allQuestions;
+    if (mode === 'wrong' && !grade) {
+      // 错题本入口：加载所有题库
+      const fileList = questionLoader.getDataFileList();
+      allQuestions = [];
+      for (const f of fileList) {
+        if (f.data && f.data.questions) {
+          allQuestions = allQuestions.concat(f.data.questions);
+        }
+      }
+    } else {
+      const decodedGrade = decodeURIComponent(grade || '');
+      const decodedSubject = decodeURIComponent(subject || '');
+      allQuestions = questionLoader.loadQuestions(decodedGrade, decodedSubject);
+    }
+
     const records = storage.getAllRecords();
     const chapterFilter = decodedChapter || null;
     let selected = selectQuestions(allQuestions, records, mode, numCount, chapterFilter);

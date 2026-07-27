@@ -1,0 +1,49 @@
+<!-- miniprogram/pages/index/index.wxml -->
+<view class="container">
+  <!-- 今日统计卡片 -->
+  <view class="card stats-card">
+    <view class="stats-row">
+      <view class="stats-item">
+        <text class="stats-number">{{todayAnswered}}</text>
+        <text class="stats-label">今日答题</text>
+      </view>
+      <view class="stats-item">
+        <text class="stats-number success-color">{{todayCorrect}}</text>
+        <text class="stats-label">今日正确</text>
+      </view>
+      <view class="stats-item">
+        <text class="stats-number primary-color">{{overallAccuracy}}%</text>
+        <text class="stats-label">总正确率</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 待复习卡片 -->
+  <view class="card due-card" bindtap="goWrongBook">
+    <view class="due-content">
+      <text class="due-number">{{dueCount}}</text>
+      <text class="due-label">待复习题目</text>
+    </view>
+    <text class="due-arrow">›</text>
+  </view>
+
+  <!-- 快捷入口 -->
+  <view class="action-grid">
+    <view class="action-item primary-bg" bindtap="goPractice">
+      <text class="action-icon">📝</text>
+      <text class="action-text">开始练习</text>
+    </view>
+    <view class="action-item" style="background-color: #4CAF50;" bindtap="goWrongBook">
+      <text class="action-icon">❌</text>
+      <text class="action-text">错题本</text>
+    </view>
+  </view>
+
+  <!-- 总览 -->
+  <view class="card">
+    <view class="overview-row">
+      <text class="overview-label">已练习题数</text>
+      <text class="overview-value">{{answeredQuestions}}</text>
+    </view>
+  </view>
+</view>

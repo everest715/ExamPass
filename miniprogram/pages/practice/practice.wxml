@@ -1,0 +1,125 @@
+<!-- miniprogram/pages/practice/practice.wxml -->
+<view class="container" wx:if="{{currentQuestion}}">
+  <!-- 顶栏 -->
+  <view class="header">
+    <text class="progress">{{progress}}</text>
+    <text class="chapter-tag">{{currentQuestion.chapter}}</text>
+  </view>
+
+  <!-- 题目区 -->
+  <view class="card question-card">
+    <view class="question-text">{{currentQuestion.question}}</view>
+
+    <!-- 单选题 -->
+    <view wx:if="{{currentQuestion.type === 'single_choice'}}" class="options">
+      <view class="option {{selectedAnswer === item ? 'selected' : ''}} {{submitted && item === currentQuestion.answer ? 'correct' : ''}} {{submitted && selectedAnswer === item && item !== currentQuestion.answer ? 'wrong' : ''}}"
+            wx:for="{{currentQuestion.options}}" wx:key="*this"
+            wx:for-index="idx"
+            data-option="{{['A','B','C','D'][idx]}}"
+            bindtap="onSingleSelect">
+        <text class="option-letter">{{['A','B','C','D'][idx]}}</text>
+        <text class="option-text">{{item}}</text>
+      </view>
+    </view>
+
+    <!-- 多选题 -->
+    <view wx:if="{{currentQuestion.type === 'multi_choice'}}" class="options">
+      <view class="option {{selectedOptions.indexOf(['A','B','C','D'][idx]) > -1 ? 'selected' : ''}} {{submitted && currentQuestion.answer.indexOf(['A','B','C','D'][idx]) > -1 ? 'correct' : ''}} {{submitted && selectedOptions.indexOf(['A','B','C','D'][idx]) > -1 && currentQuestion.answer.indexOf(['A','B','C','D'][idx]) === -1 ? 'wrong' : ''}}"
+            wx:for="{{currentQuestion.options}}" wx:key="*this"
+            wx:for-index="idx"
+            data-option="{{['A','B','C','D'][idx]}}"
+            bindtap="onMultiSelect">
+        <text class="option-letter">{{['A','B','C','D'][idx]}}</text>
+        <text class="option-text">{{item}}</text>
+      </view>
+    </view>
+
+    <!-- 填空题 -->
+    <view wx:if="{{currentQuestion.type === 'fill_blank'}}" class="fill-blank">
+      <input class="fill-input" placeholder="请输入答案" value="{{inputAnswer}}"
+             bindinput="onInput" disabled="{{submitted}}" />
+    </view>
+
+    <!-- 判断题 -->
+    <view wx:if="{{currentQuestion.type === 'true_false'}}" class="true-false">
+      <view class="tf-btn {{selectedAnswer === 'true' ? 'selected' : ''}} {{submitted && currentQuestion.answer === true ? 'correct' : ''}} {{submitted && selectedAnswer === 'true' && currentQuestion.answer !== true ? 'wrong' : ''}}"
+            data-value="true" bindtap="onTrueFalse">
+        <text>✓ 正确</text>
+      </view>
+      <view class="tf-btn {{selectedAnswer === 'false' ? 'selected' : ''}} {{submitted && currentQuestion.answer === false ? 'correct' : ''}} {{submitted && selectedAnswer === 'false' && currentQuestion.answer !== false ? 'wrong' : ''}}"
+            data-value="false" bindtap="onTrueFalse">
+        <text>✗ 错误</text>
+      </view>
+    </view>
+
+    <!-- 竖式计算 -->
+    <view wx:if="{{currentQuestion.type === 'vertical_calc'}}" class="vertical-area">
+      <view class="vertical-display">
+        <view class="v-row" wx:for="{{currentQuestion.operands}}" wx:key="*this">
+          <text>{{item}}</text>
+        </view>
+        <view class="v-line"></view>
+        <view class="v-input-row">
+          <input class="v-input" placeholder="?" value="{{inputAnswer}}"
+                 bindinput="onVerticalInput" disabled="{{submitted}}" />
+        </view>
+      </view>
+    </view>
+
+    <!-- 竖式填空 -->
+    <view wx:if="{{currentQuestion.type === 'vertical_fill'}}" class="vertical-fill-area">
+      <!-- 竖式展示（简化版，实际渲染由组件完成） -->
+      <view class="vertical-display">
+        <view class="v-row" wx:for="{{currentQuestion.rows}}" wx:key="index">
+          <text>{{item.text}}</text>
+        </view>
+        <view class="v-line"></view>
+        <view class="v-row">
+          <text>{{currentQuestion.result.text}}</text>
+        </view>
+      </view>
+    </view>
+
+    <!-- 答案反馈 -->
+    <view wx:if="{{submitted}}" class="feedback {{isCorrect ? 'feedback-correct' : 'feedback-wrong'}}">
+      <view class="feedback-result">
+        <text wx:if="{{isCorrect}}">✓ 回答正确！</text>
+        <text wx:else>✗ 回答错误</text>
+      </view>
+      <view class="feedback-answer" wx:if="{{!isCorrect}}">
+        <text>正确答案：{{currentQuestion.answer}}</text>
+      </view>
+      <view class="feedback-explanation">
+        <text>{{currentQuestion.explanation}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 底部按钮 -->
+  <view class="bottom-bar">
+    <view wx:if="{{!submitted}}" class="btn-primary" bindtap="onSubmit">确定</view>
+    <view wx:else class="btn-primary btn-next" bindtap="onNext">下一题</view>
+  </view>
+
+  <!-- 成绩单弹窗 -->
+  <view wx:if="{{showResult}}" class="result-modal">
+    <view class="result-card card">
+      <text class="result-title">练习完成！</text>
+      <view class="result-stats">
+        <view class="result-item">
+          <text class="result-number primary-color">{{resultSummary.accuracy}}%</text>
+          <text class="result-label">正确率</text>
+        </view>
+        <view class="result-item">
+          <text class="result-number">{{resultSummary.correct}}/{{resultSummary.total}}</text>
+          <text class="result-label">正确/总数</text>
+        </view>
+        <view class="result-item">
+          <text class="result-number">{{resultSummary.duration}}s</text>
+          <text class="result-label">用时</text>
+        </view>
+      </view>
+      <view class="btn-primary" bindtap="onFinish">完成</view>
+    </view>
+  </view>
+</view>

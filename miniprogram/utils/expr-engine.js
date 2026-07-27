@@ -198,8 +198,12 @@ function instantiateTemplate(question) {
   const instance = JSON.parse(JSON.stringify(question));
 
   // 替换所有字符串值
-  instance.question = interpolate(instance.question, vars);
-  instance.answer = interpolate(instance.answer, vars);
+  if (instance.question) {
+    instance.question = interpolate(instance.question, vars);
+  }
+  if (instance.answer) {
+    instance.answer = interpolate(instance.answer, vars);
+  }
   if (instance.explanation) {
     instance.explanation = interpolate(instance.explanation, vars);
   }

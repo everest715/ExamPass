@@ -46,6 +46,14 @@ Page({
       return;
     }
 
+    // 预计算选项字母映射（WXML 不支持数组索引表达式）
+    const LETTERS = ['A', 'B', 'C', 'D', 'E', 'F'];
+    selected.forEach(q => {
+      if (q.options) {
+        q.optionLetters = q.options.map((_, i) => LETTERS[i]);
+      }
+    });
+
     this.setData({
       questions: selected,
       currentIndex: 0,

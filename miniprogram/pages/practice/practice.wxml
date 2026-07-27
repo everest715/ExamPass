@@ -12,24 +12,24 @@
 
     <!-- 单选题 -->
     <view wx:if="{{currentQuestion.type === 'single_choice'}}" class="options">
-      <view class="option {{selectedAnswer === ['A','B','C','D'][idx] ? 'selected' : ''}} {{submitted && currentQuestion.answer === ['A','B','C','D'][idx] ? 'correct' : ''}} {{submitted && selectedAnswer === ['A','B','C','D'][idx] && currentQuestion.answer !== ['A','B','C','D'][idx] ? 'wrong' : ''}}"
+      <view class="option {{selectedAnswer === item.letter ? 'selected' : ''}} {{submitted && currentQuestion.answer === item.letter ? 'correct' : ''}} {{submitted && selectedAnswer === item.letter && currentQuestion.answer !== item.letter ? 'wrong' : ''}}"
             wx:for="{{currentQuestion.options}}" wx:key="*this"
             wx:for-index="idx"
-            data-option="{{['A','B','C','D'][idx]}}"
+            data-option="{{currentQuestion.optionLetters[idx]}}"
             bindtap="onSingleSelect">
-        <text class="option-letter">{{['A','B','C','D'][idx]}}</text>
+        <text class="option-letter">{{currentQuestion.optionLetters[idx]}}</text>
         <text class="option-text">{{item}}</text>
       </view>
     </view>
 
     <!-- 多选题 -->
     <view wx:if="{{currentQuestion.type === 'multi_choice'}}" class="options">
-      <view class="option {{selectedOptions.indexOf(['A','B','C','D'][idx]) > -1 ? 'selected' : ''}} {{submitted && currentQuestion.answer.indexOf(['A','B','C','D'][idx]) > -1 ? 'correct' : ''}} {{submitted && selectedOptions.indexOf(['A','B','C','D'][idx]) > -1 && currentQuestion.answer.indexOf(['A','B','C','D'][idx]) === -1 ? 'wrong' : ''}}"
+      <view class="option {{selectedOptions.indexOf(currentQuestion.optionLetters[idx]) > -1 ? 'selected' : ''}} {{submitted && currentQuestion.answer.indexOf(currentQuestion.optionLetters[idx]) > -1 ? 'correct' : ''}} {{submitted && selectedOptions.indexOf(currentQuestion.optionLetters[idx]) > -1 && currentQuestion.answer.indexOf(currentQuestion.optionLetters[idx]) === -1 ? 'wrong' : ''}}"
             wx:for="{{currentQuestion.options}}" wx:key="*this"
             wx:for-index="idx"
-            data-option="{{['A','B','C','D'][idx]}}"
+            data-option="{{currentQuestion.optionLetters[idx]}}"
             bindtap="onMultiSelect">
-        <text class="option-letter">{{['A','B','C','D'][idx]}}</text>
+        <text class="option-letter">{{currentQuestion.optionLetters[idx]}}</text>
         <text class="option-text">{{item}}</text>
       </view>
     </view>

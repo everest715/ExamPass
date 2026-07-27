@@ -1,41 +1,24 @@
 /* miniprogram/pages/select/select.wxss */
 .container { padding: 20rpx 0 120rpx; }
 
-.steps {
-  display: flex; align-items: center; justify-content: center;
-  padding: 20rpx; gap: 4rpx;
-}
-.step {
-  font-size: 24rpx; color: #999; padding: 8rpx 16rpx;
-  border-radius: 20rpx; background: #EEE;
-}
-.step.active { color: #FFF; background: #FF6B35; }
-.step-line { width: 20rpx; height: 4rpx; background: #DDD; }
-.step-line.active { background: #FF6B35; }
+.form-card { padding: 0; }
 
-.select-title {
-  font-size: 32rpx; font-weight: bold; margin: 20rpx 24rpx; color: #333;
+.form-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 32rpx; border-bottom: 2rpx solid #F0F0F0;
 }
-.select-item {
-  display: flex; justify-content: space-between; align-items: center;
-  font-size: 30rpx; padding: 36rpx 32rpx;
-}
-.select-item.selected { border: 4rpx solid #FF6B35; }
-.arrow { color: #CCC; font-size: 40rpx; }
-.check { color: #4CAF50; font-size: 36rpx; }
+.form-row:last-child { border-bottom: none; }
 
-.count-grid {
-  display: flex; gap: 20rpx; margin: 20rpx; justify-content: center;
+.form-label {
+  font-size: 30rpx; font-weight: bold; color: #333; width: 120rpx;
 }
-.count-item {
-  flex: 1; text-align: center; padding: 40rpx 0;
-  border-radius: 20rpx; background: #FFF; font-size: 32rpx; font-weight: bold;
-  border: 4rpx solid transparent;
-  color: #333;
+
+picker { flex: 1; }
+
+.picker-value {
+  display: flex; align-items: center; justify-content: flex-end;
+  font-size: 30rpx; color: #FF6B35; gap: 8rpx;
 }
-.count-item.selected { color: #FFF; background-color: #FF6B35; }
+.picker-arrow { font-size: 24rpx; color: #CCC; }
 
 .start-btn { margin: 40rpx 20rpx; }
-.back-btn {
-  text-align: center; color: #999; font-size: 28rpx; padding: 20rpx;
-}

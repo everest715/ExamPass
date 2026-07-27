@@ -3,91 +3,84 @@ const questionLoader = require('../../utils/question-loader');
 
 Page({
   data: {
-    step: 1,
     grades: [],
     subjects: [],
     chapters: [],
-    selectedGrade: '',
-    selectedSubject: '',
-    selectedChapter: '',
-    selectedMode: '',
-    selectedCount: 20,
-    modes: [
-      { value: 'sequential', label: '顺序练习' },
-      { value: 'random', label: '随机练习' },
-      { value: 'wrong', label: '错题练习' },
-      { value: 'weak', label: '薄弱练习' }
-    ],
-    counts: [10, 20, 30],
+    selectedGradeIndex: 0,
+    selectedSubjectIndex: 0,
+    selectedChapterIndex: 0,
+    selectedModeIndex: 0,
+    selectedCountIndex: 1,
+    modes: ['顺序练习', '随机练习', '错题练习', '薄弱练习'],
+    modeValues: ['sequential', 'random', 'wrong', 'weak'],
+    counts: ['10题', '20题', '30题'],
+    countValues: [10, 20, 30],
     catalog: {}
   },
 
   onLoad() {
-    // 加载目录
     const fileList = questionLoader.getDataFileList();
     const dataFiles = fileList.map(f => f.data).filter(Boolean);
     const catalog = questionLoader.buildCatalog(dataFiles);
+    const grades = Object.keys(catalog);
+    this.setData({ catalog, grades });
+    this.updateSubjects(0);
+  },
+
+  updateSubjects(gradeIndex) {
+    const grade = this.data.grades[gradeIndex];
+    if (!grade) return;
+    const subjects = Object.keys(this.data.catalog[grade]);
     this.setData({
-      catalog,
-      grades: Object.keys(catalog)
+      subjects,
+      selectedGradeIndex: gradeIndex,
+      selectedSubjectIndex: 0
+    });
+    this.updateChapters(0);
+  },
+
+  updateChapters(subjectIndex) {
+    const grade = this.data.grades[this.data.selectedGradeIndex];
+    if (!grade) return;
+    const subject = this.data.subjects[subjectIndex];
+    if (!subject) return;
+    const chapters = ['全部章节'].concat(this.data.catalog[grade][subject] || []);
+    this.setData({
+      chapters,
+      selectedSubjectIndex: subjectIndex,
+      selectedChapterIndex: 0
     });
   },
 
-  selectGrade(e) {
-    const grade = e.currentTarget.dataset.grade;
-    this.setData({
-      selectedGrade: grade,
-      subjects: Object.keys(this.data.catalog[grade]),
-      step: 2
-    });
+  onGradeChange(e) {
+    this.updateSubjects(parseInt(e.detail.value));
   },
 
-  selectSubject(e) {
-    const subject = e.currentTarget.dataset.subject;
-    this.setData({
-      selectedSubject: subject,
-      chapters: this.data.catalog[this.data.selectedGrade][subject],
-      step: 3
-    });
+  onSubjectChange(e) {
+    this.updateChapters(parseInt(e.detail.value));
   },
 
-  selectChapter(e) {
-    const chapter = e.currentTarget.dataset.chapter;
-    this.setData({
-      selectedChapter: chapter,
-      step: 4
-    });
+  onChapterChange(e) {
+    this.setData({ selectedChapterIndex: parseInt(e.detail.value) });
   },
 
-  selectAllChapters() {
-    this.setData({
-      selectedChapter: '',
-      step: 4
-    });
+  onModeChange(e) {
+    this.setData({ selectedModeIndex: parseInt(e.detail.value) });
   },
 
-  selectMode(e) {
-    const mode = e.currentTarget.dataset.mode;
-    this.setData({ selectedMode: mode, step: 5 });
-  },
-
-  selectCount(e) {
-    const count = e.currentTarget.dataset.count;
-    this.setData({ selectedCount: count });
+  onCountChange(e) {
+    this.setData({ selectedCountIndex: parseInt(e.detail.value) });
   },
 
   startPractice() {
-    const { selectedGrade, selectedSubject, selectedChapter, selectedMode, selectedCount } = this.data;
+    const grade = this.data.grades[this.data.selectedGradeIndex];
+    const subject = this.data.subjects[this.data.selectedSubjectIndex];
+    const chapterIndex = this.data.selectedChapterIndex;
+    const chapter = chapterIndex === 0 ? '' : this.data.chapters[chapterIndex];
+    const mode = this.data.modeValues[this.data.selectedModeIndex];
+    const count = this.data.countValues[this.data.selectedCountIndex];
     wx.navigateTo({
-      url: `/pages/practice/practice?grade=${encodeURIComponent(selectedGrade)}&subject=${encodeURIComponent(selectedSubject)}&chapter=${encodeURIComponent(selectedChapter)}&mode=${selectedMode}&count=${selectedCount}`
+      url: `/pages/practice/practice?grade=${encodeURIComponent(grade)}&subject=${encodeURIComponent(subject)}&chapter=${encodeURIComponent(chapter)}&mode=${mode}&count=${count}`
     });
-  },
-
-  goBack() {
-    if (this.data.step > 1) {
-      this.setData({ step: this.data.step - 1 });
-    } else {
-      wx.navigateBack();
-    }
   }
 });

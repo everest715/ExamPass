@@ -1,0 +1,23 @@
+<!-- miniprogram/components/number-pad/number-pad.wxml -->
+<view class="number-pad" wx:if="{{show}}">
+  <view class="pad-row">
+    <view class="pad-key" data-digit="1" bindtap="onDigit">1</view>
+    <view class="pad-key" data-digit="2" bindtap="onDigit">2</view>
+    <view class="pad-key" data-digit="3" bindtap="onDigit">3</view>
+  </view>
+  <view class="pad-row">
+    <view class="pad-key" data-digit="4" bindtap="onDigit">4</view>
+    <view class="pad-key" data-digit="5" bindtap="onDigit">5</view>
+    <view class="pad-key" data-digit="6" bindtap="onDigit">6</view>
+  </view>
+  <view class="pad-row">
+    <view class="pad-key" data-digit="7" bindtap="onDigit">7</view>
+    <view class="pad-key" data-digit="8" bindtap="onDigit">8</view>
+    <view class="pad-key" data-digit="9" bindtap="onDigit">9</view>
+  </view>
+  <view class="pad-row">
+    <view class="pad-key pad-clear" bindtap="onClear">清除</view>
+    <view class="pad-key" data-digit="0" bindtap="onDigit">0</view>
+    <view class="pad-key pad-confirm">✓</view>
+  </view>
+</view>

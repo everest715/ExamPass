@@ -1,0 +1,15 @@
+/* miniprogram/components/number-pad/number-pad.wxss */
+.number-pad {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: #F5F5F5; padding: 16rpx; gap: 12rpx;
+}
+.pad-row { display: flex; gap: 12rpx; margin-bottom: 12rpx; }
+.pad-row:last-child { margin-bottom: 0; }
+.pad-key {
+  flex: 1; text-align: center; padding: 32rpx 0;
+  background: #FFF; border-radius: 12rpx;
+  font-size: 40rpx; font-weight: bold; color: #333;
+}
+.pad-key:active { background: #E8E8E8; }
+.pad-clear { color: #F44336; font-size: 32rpx; }
+.pad-confirm { color: #4CAF50; }

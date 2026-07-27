@@ -1,0 +1,28 @@
+/* miniprogram/pages/stats/stats.wxss */
+.container { padding: 20rpx 0; }
+
+.overview-card { display: flex; justify-content: space-around; text-align: center; }
+.overview-item { display: flex; flex-direction: column; align-items: center; }
+.overview-number { font-size: 48rpx; font-weight: bold; }
+.overview-label { font-size: 24rpx; color: #999; margin-top: 8rpx; }
+
+.section-title { font-size: 32rpx; font-weight: bold; margin-bottom: 24rpx; display: block; }
+
+.chapter-list { display: flex; flex-direction: column; gap: 20rpx; }
+.chapter-item { display: flex; align-items: center; gap: 16rpx; }
+.chapter-name { width: 120rpx; font-size: 28rpx; }
+.chapter-bar-bg { flex: 1; height: 24rpx; background: #F0F0F0; border-radius: 12rpx; overflow: hidden; }
+.chapter-bar { height: 100%; border-radius: 12rpx; transition: width 0.3s; }
+.chapter-score { width: 60rpx; text-align: right; font-size: 28rpx; font-weight: bold; }
+
+.trend-list { display: flex; flex-direction: column; gap: 12rpx; }
+.trend-item { display: flex; align-items: center; gap: 16rpx; }
+.trend-date { width: 160rpx; font-size: 24rpx; color: #666; }
+.trend-bar-bg { flex: 1; height: 20rpx; background: #F0F0F0; border-radius: 10rpx; overflow: hidden; }
+.trend-bar { height: 100%; background: #FF6B35; border-radius: 10rpx; }
+.trend-value { width: 60rpx; text-align: right; font-size: 24rpx; }
+
+.daily-list { display: flex; flex-direction: column; gap: 12rpx; }
+.daily-item { display: flex; justify-content: space-between; }
+.daily-date { font-size: 24rpx; color: #666; }
+.daily-count { font-size: 24rpx; font-weight: bold; color: #FF6B35; }

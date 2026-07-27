@@ -1,0 +1,57 @@
+<!-- miniprogram/pages/stats/stats.wxml -->
+<view class="container">
+  <!-- 总览卡片 -->
+  <view class="card overview-card">
+    <view class="overview-item">
+      <text class="overview-number primary-color">{{overallAccuracy}}%</text>
+      <text class="overview-label">总正确率</text>
+    </view>
+    <view class="overview-item">
+      <text class="overview-number">{{totalAnswered}}</text>
+      <text class="overview-label">总答题数</text>
+    </view>
+    <view class="overview-item">
+      <text class="overview-number success-color">{{totalCorrect}}</text>
+      <text class="overview-label">总正确数</text>
+    </view>
+  </view>
+
+  <!-- 章节熟练度 -->
+  <view class="card">
+    <text class="section-title">章节熟练度</text>
+    <view class="chapter-list">
+      <view class="chapter-item" wx:for="{{chapterRanking}}" wx:key="chapter">
+        <text class="chapter-name">{{item.chapter}}</text>
+        <view class="chapter-bar-bg">
+          <view class="chapter-bar" style="width: {{item.score * 100}}%; background-color: {{item.score < 0.4 ? '#F44336' : item.score < 0.7 ? '#FF9800' : '#4CAF50'}};"></view>
+        </view>
+        <text class="chapter-score">{{item.score}}</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 正确率趋势 -->
+  <view class="card">
+    <text class="section-title">正确率趋势（近30天）</text>
+    <view class="trend-list">
+      <view class="trend-item" wx:for="{{accuracyTrend}}" wx:key="date" wx:if="{{item.value > 0}}">
+        <text class="trend-date">{{item.date}}</text>
+        <view class="trend-bar-bg">
+          <view class="trend-bar" style="width: {{item.value}}%;"></view>
+        </view>
+        <text class="trend-value">{{item.value}}%</text>
+      </view>
+    </view>
+  </view>
+
+  <!-- 每日练习量 -->
+  <view class="card">
+    <text class="section-title">每日练习量（近30天）</text>
+    <view class="daily-list">
+      <view class="daily-item" wx:for="{{dailyCountTrend}}" wx:key="date" wx:if="{{item.value > 0}}">
+        <text class="daily-date">{{item.date}}</text>
+        <text class="daily-count">{{item.value}}题</text>
+      </view>
+    </view>
+  </view>
+</view>

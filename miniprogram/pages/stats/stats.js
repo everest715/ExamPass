@@ -31,10 +31,9 @@ Page({
     const fileList = questionLoader.getDataFileList();
     const allQuestions = [];
     for (const f of fileList) {
-      try {
-        const data = require(`../../data/${f.file}`);
-        allQuestions.push(...data.questions);
-      } catch (e) {}
+      if (f.data && f.data.questions) {
+        allQuestions.push(...f.data.questions);
+      }
     }
     const ranking = stats.getChapterRanking(allQuestions, records);
 

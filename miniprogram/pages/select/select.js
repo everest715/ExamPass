@@ -25,13 +25,7 @@ Page({
   onLoad() {
     // 加载目录
     const fileList = questionLoader.getDataFileList();
-    const dataFiles = fileList.map(f => {
-      try {
-        return require(`../../data/${f.file}`);
-      } catch (e) {
-        return null;
-      }
-    }).filter(Boolean);
+    const dataFiles = fileList.map(f => f.data).filter(Boolean);
     const catalog = questionLoader.buildCatalog(dataFiles);
     this.setData({
       catalog,

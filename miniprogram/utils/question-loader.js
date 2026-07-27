@@ -37,27 +37,31 @@ function instantiateQuestion(question) {
 
 /**
  * 加载指定年级和科目的题库
- * 在小程序中通过 require 加载 JSON 文件
+ * 微信小程序中 require() 不支持动态路径，从 getDataFileList 匹配
  */
 function loadQuestions(grade, subject) {
-  const fileName = `../data/${grade}_${subject}.json`;
-  try {
-    const data = require(fileName);
-    return data.questions || [];
-  } catch (e) {
-    console.error('Failed to load questions:', fileName, e);
-    return [];
+  const files = getDataFileList();
+  const match = files.find(f => f.grade === grade && f.subject === subject);
+  if (match) {
+    return match.data.questions || [];
   }
+  console.error('Failed to load questions for:', grade, subject);
+  return [];
 }
 
 /**
- * 获取所有题库文件的列表
+ * 获取所有题库数据的列表
+ * 微信小程序中 require() 不支持动态路径，必须用静态字符串
  */
 function getDataFileList() {
-  // 小程序中无法动态列举文件，需要维护一个注册表
-  return [
-    { grade: '高一', subject: '数学', file: '高一_数学.json' }
-  ];
+  const files = [];
+  try {
+    const data = require('../data/高一_数学.json');
+    files.push({ grade: '高一', subject: '数学', data });
+  } catch (e) {
+    console.error('Failed to load data file 高一_数学.json:', e);
+  }
+  return files;
 }
 
 module.exports = {

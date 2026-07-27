@@ -1,0 +1,75 @@
+<!-- miniprogram/pages/select/select.wxml -->
+<view class="container">
+  <!-- 步骤指示器 -->
+  <view class="steps">
+    <view class="step {{step >= 1 ? 'active' : ''}}">年级</view>
+    <view class="step-line {{step >= 2 ? 'active' : ''}}"></view>
+    <view class="step {{step >= 2 ? 'active' : ''}}">科目</view>
+    <view class="step-line {{step >= 3 ? 'active' : ''}}"></view>
+    <view class="step {{step >= 3 ? 'active' : ''}}">章节</view>
+    <view class="step-line {{step >= 4 ? 'active' : ''}}"></view>
+    <view class="step {{step >= 4 ? 'active' : ''}}">模式</view>
+    <view class="step-line {{step >= 5 ? 'active' : ''}}"></view>
+    <view class="step {{step >= 5 ? 'active' : ''}}">数量</view>
+  </view>
+
+  <!-- Step 1: 选年级 -->
+  <view wx:if="{{step === 1}}" class="card-list">
+    <view class="select-title">选择年级</view>
+    <view class="card select-item" wx:for="{{grades}}" wx:key="*this"
+          data-grade="{{item}}" bindtap="selectGrade">
+      <text>{{item}}</text>
+      <text class="arrow">›</text>
+    </view>
+  </view>
+
+  <!-- Step 2: 选科目 -->
+  <view wx:if="{{step === 2}}" class="card-list">
+    <view class="select-title">选择科目</view>
+    <view class="card select-item" wx:for="{{subjects}}" wx:key="*this"
+          data-subject="{{item}}" bindtap="selectSubject">
+      <text>{{item}}</text>
+      <text class="arrow">›</text>
+    </view>
+  </view>
+
+  <!-- Step 3: 选章节 -->
+  <view wx:if="{{step === 3}}" class="card-list">
+    <view class="select-title">选择章节</view>
+    <view class="card select-item" bindtap="selectAllChapters">
+      <text>全部章节</text>
+      <text class="arrow">›</text>
+    </view>
+    <view class="card select-item" wx:for="{{chapters}}" wx:key="*this"
+          data-chapter="{{item}}" bindtap="selectChapter">
+      <text>{{item}}</text>
+      <text class="arrow">›</text>
+    </view>
+  </view>
+
+  <!-- Step 4: 选模式 -->
+  <view wx:if="{{step === 4}}" class="card-list">
+    <view class="select-title">选择练习模式</view>
+    <view class="card select-item {{selectedMode === item.value ? 'selected' : ''}}"
+          wx:for="{{modes}}" wx:key="value"
+          data-mode="{{item.value}}" bindtap="selectMode">
+      <text>{{item.label}}</text>
+      <text wx:if="{{selectedMode === item.value}}" class="check">✓</text>
+    </view>
+  </view>
+
+  <!-- Step 5: 选数量 -->
+  <view wx:if="{{step === 5}}" class="card-list">
+    <view class="select-title">选择题量</view>
+    <view class="count-grid">
+      <view class="count-item {{selectedCount === item ? 'selected primary-bg' : ''}}"
+            wx:for="{{counts}}" wx:key="*this"
+            data-count="{{item}}" bindtap="selectCount">
+        <text>{{item}}题</text>
+      </view>
+    </view>
+    <view class="btn-primary start-btn" bindtap="startPractice">开始练习</view>
+  </view>
+
+  <view class="back-btn" bindtap="goBack">‹ 返回</view>
+</view>

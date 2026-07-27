@@ -53,8 +53,9 @@
     <!-- 竖式计算 -->
     <view wx:if="{{currentQuestion.type === 'vertical_calc'}}" class="vertical-area">
       <view class="vertical-display">
-        <view class="v-row" wx:for="{{currentQuestion.operands}}" wx:key="*this">
-          <text>{{item}}</text>
+        <view class="v-row" wx:for="{{currentQuestion.operands}}" wx:key="*this" wx:for-index="idx">
+          <text wx:if="{{idx === 1}}" class="v-op-symbol">{{operationSymbol}}</text>
+          <text class="v-digit">{{item}}</text>
         </view>
         <view class="v-line"></view>
         <view class="v-input-row">
@@ -66,14 +67,14 @@
 
     <!-- 竖式填空 -->
     <view wx:if="{{currentQuestion.type === 'vertical_fill'}}" class="vertical-fill-area">
-      <!-- 竖式展示（简化版，实际渲染由组件完成） -->
       <view class="vertical-display">
-        <view class="v-row" wx:for="{{currentQuestion.rows}}" wx:key="index">
-          <text>{{item.text}}</text>
+        <view class="v-row" wx:for="{{currentQuestion.rows}}" wx:key="index" wx:for-index="idx">
+          <text wx:if="{{idx === 1}}" class="v-op-symbol">{{operationSymbol}}</text>
+          <text class="v-digit">{{item.text}}</text>
         </view>
         <view class="v-line"></view>
         <view class="v-row">
-          <text>{{currentQuestion.result.text}}</text>
+          <text class="v-digit">{{currentQuestion.result.text}}</text>
         </view>
       </view>
     </view>

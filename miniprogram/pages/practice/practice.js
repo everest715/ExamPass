@@ -9,6 +9,7 @@ Page({
     questions: [],
     currentIndex: 0,
     currentQuestion: null,
+    operationSymbol: '+',
     selectedAnswer: '',
     selectedOptions: [],
     inputAnswer: '',
@@ -98,6 +99,10 @@ Page({
           correct: question.answer.indexOf(LETTERS[i]) > -1
         }))
       });
+    }
+    if (question.operation) {
+      const symbols = { add: '+', subtract: '−', multiply: '×', divide: '÷' };
+      this.setData({ operationSymbol: symbols[question.operation] || '+' });
     }
   },
 

@@ -1,0 +1,35 @@
+/* 全局样式 - 学生友好设计 */
+page {
+  background-color: #F5F5F5;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  color: #333;
+  font-size: 28rpx;
+}
+
+/* 主色调 */
+.primary-color { color: #FF6B35; }
+.primary-bg { background-color: #FF6B35; }
+.success-color { color: #4CAF50; }
+.success-bg { background-color: #4CAF50; }
+.error-color { color: #F44336; }
+.error-bg { background-color: #F44336; }
+
+/* 卡片 */
+.card {
+  background: #FFFFFF;
+  border-radius: 20rpx;
+  padding: 32rpx;
+  margin: 20rpx;
+  box-shadow: 0 2rpx 12rpx rgba(0,0,0,0.08);
+}
+
+/* 圆角按钮 */
+.btn-primary {
+  background-color: #FF6B35;
+  color: #FFFFFF;
+  border-radius: 50rpx;
+  padding: 24rpx 48rpx;
+  text-align: center;
+  font-size: 32rpx;
+  font-weight: bold;
+}

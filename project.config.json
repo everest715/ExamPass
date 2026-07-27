@@ -1,0 +1,16 @@
+{
+  "description": "ExamPass 刷题小程序",
+  "miniprogramRoot": "miniprogram/",
+  "compileType": "miniprogram",
+  "setting": {
+    "urlCheck": false,
+    "es6": true,
+    "enhance": true,
+    "postcss": true,
+    "minified": true,
+    "newFeature": true
+  },
+  "appid": "",
+  "projectname": "ExamPass",
+  "libVersion": "3.3.4"
+}

@@ -49,14 +49,14 @@
 .vertical-area { display: flex; justify-content: center; padding: 40rpx; }
 .vertical-display {
   display: flex; flex-direction: column; align-items: flex-end;
-  font-family: 'Courier New', monospace; font-size: 40rpx;
+  font-family: 'Courier New', monospace; font-size: 44rpx;
 }
-.v-row { padding: 4rpx 0; display: flex; align-items: center; justify-content: flex-end; }
-.v-op-symbol { color: #666; font-size: 40rpx; margin-right: 0; }
+.v-row { padding: 4rpx 0; display: flex; align-items: baseline; }
+.v-op-symbol { width: 60rpx; text-align: left; color: #666; font-size: 44rpx; }
 .v-digit { letter-spacing: 8rpx; }
 .v-line { width: 100%; height: 4rpx; background: #333; margin: 8rpx 0; }
 .v-input-row { padding: 4rpx 0; }
-.v-input { text-align: right; font-size: 40rpx; width: 300rpx; }
+.v-input { text-align: right; font-size: 44rpx; width: 300rpx; }
 
 .feedback { margin-top: 32rpx; padding: 24rpx; border-radius: 16rpx; }
 .feedback-correct { background: #F0FBF0; }

@@ -1,4 +1,4 @@
-{
+module.exports = {
   "grade": "高一",
   "subject": "数学",
   "questions": [
@@ -165,4 +165,4 @@
       "explanation": "{count} ÷ 2 = {count / 2}"
     }
   ]
-}
+};

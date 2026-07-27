@@ -56,10 +56,10 @@ function loadQuestions(grade, subject) {
 function getDataFileList() {
   const files = [];
   try {
-    const data = require('../data/高一_数学.json');
+    const data = require('../data/高一_数学.js');
     files.push({ grade: '高一', subject: '数学', data });
   } catch (e) {
-    console.error('Failed to load data file 高一_数学.json:', e);
+    console.error('Failed to load data file 高一_数学.js:', e);
   }
   return files;
 }

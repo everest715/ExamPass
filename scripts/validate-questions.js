@@ -172,10 +172,15 @@ function validateFile(filePath) {
   const fileName = path.basename(filePath);
   let data;
   try {
-    const raw = fs.readFileSync(filePath, 'utf8');
-    data = JSON.parse(raw);
+    // 支持 .js（module.exports）和 .json 两种格式
+    if (fileName.endsWith('.js')) {
+      data = require(filePath);
+    } else {
+      const raw = fs.readFileSync(filePath, 'utf8');
+      data = JSON.parse(raw);
+    }
   } catch (e) {
-    errors.push(`[${fileName}] JSON 解析失败: ${e.message}`);
+    errors.push(`[${fileName}] 解析失败: ${e.message}`);
     return;
   }
 
@@ -203,7 +208,7 @@ function main() {
 
   let files;
   try {
-    files = fs.readdirSync(DATA_DIR).filter(f => f.endsWith('.json'));
+    files = fs.readdirSync(DATA_DIR).filter(f => f.endsWith('.js') || f.endsWith('.json'));
   } catch (e) {
     console.error(`无法读取数据目录: ${DATA_DIR}`);
     process.exit(1);

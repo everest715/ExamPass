@@ -1,16 +1,73 @@
 // scripts/test/test-question-loader.js
 const assert = require('assert');
-const path = require('path');
-const fs = require('fs');
-
-// 由于 question-loader.js 中使用了 require() 加载 JSON，
-// 但运行时在小程序中无法用 require，这里测试纯逻辑函数。
-// 我们将 question-loader 的核心逻辑设计为可注入数据的形式。
 
 const { buildCatalog, filterByChapter, instantiateQuestion } = require('../../miniprogram/utils/question-loader');
 
-// 读取测试数据
-const rawData = JSON.parse(fs.readFileSync(path.join(__dirname, '../../miniprogram/data/test_sample.json'), 'utf8'));
+// 内联测试数据（不依赖外部文件）
+const rawData = {
+  grade: '测试年级',
+  subject: '测试科目',
+  questions: [
+    {
+      id: 'test_001',
+      type: 'single_choice',
+      chapter: '章节A',
+      question: '1+1=?',
+      options: ['1', '2', '3', '4'],
+      answer: 'B',
+      explanation: '1+1=2'
+    },
+    {
+      id: 'test_002',
+      type: 'fill_blank',
+      chapter: '章节A',
+      question: '2+2=?',
+      answer: '4',
+      matchMode: 'exact',
+      explanation: '2+2=4'
+    },
+    {
+      id: 'test_003',
+      type: 'single_choice',
+      chapter: '章节B',
+      question: '3+3=?',
+      options: ['5', '6', '7', '8'],
+      answer: 'B',
+      explanation: '3+3=6'
+    },
+    {
+      id: 'test_004',
+      type: 'fill_blank',
+      chapter: '章节B',
+      template: true,
+      variables: {
+        a: { min: 5, max: 5 },
+        b: { min: 3, max: 3 }
+      },
+      question: '{a}+{b}=?',
+      answer: '{a + b}',
+      matchMode: 'exact',
+      explanation: '{a}+{b}={a + b}'
+    },
+    {
+      id: 'test_005',
+      type: 'vertical_calc',
+      chapter: '算术',
+      operation: 'add',
+      operands: ['123', '45'],
+      answer: '168',
+      explanation: '123+45=168'
+    },
+    {
+      id: 'test_006',
+      type: 'true_false',
+      chapter: '章节A',
+      question: '2是偶数。',
+      answer: true,
+      explanation: '2能被2整除'
+    }
+  ]
+};
 
 function testBuildCatalog() {
   const catalog = buildCatalog([rawData]);

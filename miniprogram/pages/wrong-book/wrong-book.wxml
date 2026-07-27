@@ -1,0 +1,23 @@
+<!-- miniprogram/pages/wrong-book/wrong-book.wxml -->
+<view class="container">
+  <view class="summary-card card">
+    <text class="summary-number">{{totalCount}}</text>
+    <text class="summary-label">待复习题目</text>
+  </view>
+
+  <view wx:if="{{groupedWrongQuestions.length === 0}}" class="empty">
+    <text class="empty-text">🎉 没有待复习的错题！</text>
+  </view>
+
+  <view wx:for="{{groupedWrongQuestions}}" wx:key="subject" class="card group-card">
+    <view class="group-header">
+      <text class="group-title">{{item.subject}}</text>
+      <text class="group-count">{{item.count}}题</text>
+    </view>
+    <view class="btn-primary practice-btn"
+          data-subject="{{item.subject}}"
+          bindtap="startWrongPractice">
+      开始练习
+    </view>
+  </view>
+</view>

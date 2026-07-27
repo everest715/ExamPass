@@ -1,0 +1,17 @@
+/* miniprogram/pages/wrong-book/wrong-book.wxss */
+.container { padding: 20rpx 0; }
+
+.summary-card { text-align: center; }
+.summary-number { font-size: 64rpx; font-weight: bold; color: #FF6B35; display: block; }
+.summary-label { font-size: 28rpx; color: #999; }
+
+.empty { text-align: center; padding: 120rpx 0; }
+.empty-text { font-size: 32rpx; color: #999; }
+
+.group-card { margin: 20rpx; }
+.group-header {
+  display: flex; justify-content: space-between; align-items: center; margin-bottom: 20rpx;
+}
+.group-title { font-size: 32rpx; font-weight: bold; }
+.group-count { font-size: 28rpx; color: #999; }
+.practice-btn { font-size: 28rpx; padding: 16rpx 0; }

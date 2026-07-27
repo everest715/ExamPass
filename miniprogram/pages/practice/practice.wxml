@@ -12,7 +12,7 @@
 
     <!-- 单选题 -->
     <view wx:if="{{currentQuestion.type === 'single_choice'}}" class="options">
-      <view class="option {{selectedAnswer === item ? 'selected' : ''}} {{submitted && item === currentQuestion.answer ? 'correct' : ''}} {{submitted && selectedAnswer === item && item !== currentQuestion.answer ? 'wrong' : ''}}"
+      <view class="option {{selectedAnswer === ['A','B','C','D'][idx] ? 'selected' : ''}} {{submitted && currentQuestion.answer === ['A','B','C','D'][idx] ? 'correct' : ''}} {{submitted && selectedAnswer === ['A','B','C','D'][idx] && currentQuestion.answer !== ['A','B','C','D'][idx] ? 'wrong' : ''}}"
             wx:for="{{currentQuestion.options}}" wx:key="*this"
             wx:for-index="idx"
             data-option="{{['A','B','C','D'][idx]}}"

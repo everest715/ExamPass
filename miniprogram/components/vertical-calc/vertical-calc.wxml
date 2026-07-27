@@ -1,0 +1,24 @@
+<!-- miniprogram/components/vertical-calc/vertical-calc.wxml -->
+<view class="vertical">
+  <!-- 计算模式 -->
+  <block wx:if="{{mode === 'calc'}}">
+    <view class="v-operand" wx:for="{{operands}}" wx:key="*this">
+      <text wx:if="{{index === 1}}" class="v-op-symbol">{{operationSymbol}}</text>
+      <text class="v-digit">{{item}}</text>
+    </view>
+    <view class="v-line"></view>
+    <slot></slot>
+  </block>
+
+  <!-- 填空模式 -->
+  <block wx:if="{{mode === 'fill'}}">
+    <view class="v-operand" wx:for="{{rows}}" wx:key="index">
+      <text wx:if="{{index === 1}}" class="v-op-symbol">{{operationSymbol}}</text>
+      <text class="v-digit">{{item.text}}</text>
+    </view>
+    <view class="v-line"></view>
+    <view class="v-result">
+      <text class="v-digit">{{result.text}}</text>
+    </view>
+  </block>
+</view>

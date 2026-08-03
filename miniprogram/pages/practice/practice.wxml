@@ -39,7 +39,7 @@
           <block wx:for="{{fillBlankParts}}" wx:key="*this" wx:for-index="partIdx">
             <text class="fill-text">{{item}}</text>
             <input wx:if="{{partIdx < fillBlankCount}}" class="fill-input-inline {{submitted && blankResults[partIdx] ? 'blank-correct' : ''}} {{submitted && !blankResults[partIdx] ? 'blank-wrong' : ''}}"
-                   type="{{fillBlankInputType}}" placeholder="?" value="{{inputAnswers[partIdx]}}"
+                   type="{{fillBlankInputType}}" placeholder=" " value="{{inputAnswers[partIdx]}}"
                    data-index="{{partIdx}}" bindinput="onBlankInput" disabled="{{submitted}}" />
           </block>
         </view>
@@ -69,7 +69,7 @@
         </view>
         <view class="v-line"></view>
         <view class="v-input-row">
-          <input class="v-input" type="digit" placeholder="?" value="{{inputAnswer}}"
+          <input class="v-input" type="digit" placeholder=" " value="{{inputAnswer}}"
                  bindinput="onVerticalInput" disabled="{{submitted}}" />
         </view>
       </view>

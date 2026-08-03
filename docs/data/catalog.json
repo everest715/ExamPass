@@ -2,14 +2,14 @@
   "version": "1.0.2",
   "files": [
     {
-      "grade": "高一",
+      "grade": "小学",
       "subject": "数学",
-      "file": "高一_数学.json"
+      "file": "小学_数学_盈亏问题.json"
     },
     {
       "grade": "小学",
       "subject": "数学",
-      "file": "小学_数学_盈亏问题.json"
+      "file": "小学_数学_归一问题.json"
     }
   ]
 }

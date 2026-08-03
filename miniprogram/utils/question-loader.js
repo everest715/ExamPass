@@ -48,8 +48,8 @@ function instantiateQuestion(question) {
 function getLocalData() {
   const files = [];
   const registry = [
-    { grade: '高一', subject: '数学', loader: () => require('../data/高一_数学.js') },
-    { grade: '小学', subject: '数学', loader: () => require('../data/小学_数学_盈亏问题.js') }
+    { grade: '小学', subject: '数学', loader: () => require('../data/小学_数学_盈亏问题.js') },
+    { grade: '小学', subject: '数学', loader: () => require('../data/小学_数学_归一问题.js') }
   ];
   for (const f of registry) {
     try {

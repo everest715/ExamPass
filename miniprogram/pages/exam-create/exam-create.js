@@ -16,7 +16,12 @@ Page({
     dayIndex: 2,
     grades: [],
     catalog: {},
-    modules: []
+    modules: [],
+    // 章节选择弹窗
+    chapterPickerVisible: false,
+    chapterPickerModuleIdx: -1,
+    chapterPickerOptions: [],
+    chapterPickerChecked: {}
   },
 
   onLoad() {
@@ -58,16 +63,59 @@ Page({
     this._refreshChapters(modules, idx);
   },
 
-  onChapterChange(e) {
+  onChapterTap(e) {
     const idx = e.currentTarget.dataset.idx;
-    const indices = e.detail.value;
     const mod = this.data.modules[idx];
-    const selected = indices
-      .map((selected, i) => selected ? mod.chapterList[1][i] : null)
-      .filter(Boolean);
-    const display = selected.length === 0 ? '全部章节' : selected.join('、');
-    this._updateModule(idx, { chapterIndices: indices, chapterDisplay: display, chapters: selected });
+    const options = mod.chapterList[1] || [];
+    const checked = {};
+    // chapters 为空表示「全部章节」，默认全选
+    const chaptersToCheck = (mod.chapters && mod.chapters.length > 0) ? mod.chapters : options;
+    chaptersToCheck.forEach(ch => { checked[ch] = true; });
+    this.setData({
+      chapterPickerVisible: true,
+      chapterPickerModuleIdx: idx,
+      chapterPickerOptions: options,
+      chapterPickerChecked: checked
+    });
   },
+
+  onChapterToggle(e) {
+    const name = e.currentTarget.dataset.name;
+    const checked = { ...this.data.chapterPickerChecked };
+    if (checked[name]) {
+      delete checked[name];
+    } else {
+      checked[name] = true;
+    }
+    this.setData({ chapterPickerChecked: checked });
+  },
+
+  onChapterSelectAll() {
+    const checked = this.data.chapterPickerChecked;
+    const allSelected = this.data.chapterPickerOptions.every(ch => checked[ch]);
+    const newChecked = {};
+    if (!allSelected) {
+      this.data.chapterPickerOptions.forEach(ch => { newChecked[ch] = true; });
+    }
+    this.setData({ chapterPickerChecked: newChecked });
+  },
+
+  onChapterDone() {
+    const idx = this.data.chapterPickerModuleIdx;
+    const checked = this.data.chapterPickerChecked;
+    const selected = this.data.chapterPickerOptions.filter(ch => checked[ch]);
+    // 全选或全不选时，显示「全部章节」，chapters 存空数组表示不筛选
+    const isAll = selected.length === 0 || selected.length === this.data.chapterPickerOptions.length;
+    const display = isAll ? '全部章节' : selected.join('、');
+    this._updateModule(idx, { chapters: isAll ? [] : selected, chapterDisplay: display });
+    this.setData({ chapterPickerVisible: false });
+  },
+
+  onChapterClose() {
+    this.setData({ chapterPickerVisible: false });
+  },
+
+  onPopupTap() {},
 
   onAddModule() {
     const modules = [...this.data.modules];
@@ -130,7 +178,6 @@ Page({
       subjects,
       subjectIndex: 0,
       chapterList: this._buildChapterList(catalog, grades, gradeIndex, 0),
-      chapterIndices: [],
       chapterDisplay: '全部章节',
       chapters: []
     };
@@ -142,7 +189,6 @@ Page({
     const subjects = grade && this.data.catalog[grade] ? Object.keys(this.data.catalog[grade]) : [];
     modules[idx].subjects = subjects;
     modules[idx].subjectIndex = 0;
-    modules[idx].chapterIndices = [];
     modules[idx].chapterDisplay = '全部章节';
     modules[idx].chapters = [];
     this._refreshChapters(modules, idx);
@@ -151,7 +197,6 @@ Page({
   _refreshChapters(modules, idx) {
     const mod = modules[idx];
     mod.chapterList = this._buildChapterList(this.data.catalog, this.data.grades, mod.gradeIndex, mod.subjectIndex);
-    mod.chapterIndices = [];
     mod.chapterDisplay = '全部章节';
     mod.chapters = [];
     this.setData({ modules });
@@ -159,12 +204,12 @@ Page({
 
   _buildChapterList(catalog, grades, gradeIndex, subjectIndex) {
     const grade = grades[gradeIndex];
-    if (!grade || !catalog[grade]) return [[''], ['']];
+    if (!grade || !catalog[grade]) return [[], []];
     const subjects = Object.keys(catalog[grade]);
     const subject = subjects[subjectIndex];
-    if (!subject) return [[''], ['']];
+    if (!subject) return [[], []];
     const chapters = catalog[grade][subject] || [];
-    return [chapters, chapters];
+    return [[], chapters];
   },
 
   _updateModule(idx, patch) {

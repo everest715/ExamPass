@@ -36,3 +36,27 @@ picker { flex: 1; }
 }
 
 .save-btn { margin: 40rpx 20rpx; }
+
+.chapter-mask {
+  position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.5); display: flex; align-items: flex-end;
+}
+.chapter-popup {
+  width: 100%; background: #FFF; border-radius: 32rpx 32rpx 0 0;
+  max-height: 70vh; display: flex; flex-direction: column;
+}
+.chapter-popup-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 28rpx 32rpx; border-bottom: 2rpx solid #F0F0F0;
+}
+.chapter-popup-title { font-size: 32rpx; font-weight: bold; }
+.chapter-popup-actions { display: flex; gap: 32rpx; }
+.chapter-popup-all { font-size: 28rpx; color: #999; }
+.chapter-popup-done { font-size: 28rpx; color: #FF6B35; font-weight: bold; }
+.chapter-list { max-height: 600rpx; }
+.chapter-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 28rpx 32rpx; border-bottom: 2rpx solid #F8F8F8;
+}
+.chapter-check { width: 40rpx; height: 40rpx; border: 4rpx solid #DDD; border-radius: 8rpx; text-align: center; line-height: 40rpx; font-size: 28rpx; color: #FFF; }
+.chapter-check.checked { background: #FF6B35; border-color: #FF6B35; }

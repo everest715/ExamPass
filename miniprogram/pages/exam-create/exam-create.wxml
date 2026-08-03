@@ -42,9 +42,7 @@
 
       <view class="form-row">
         <text class="form-label">章节</text>
-        <picker mode="multiSelector" range="{{item.chapterList}}" value="{{item.chapterIndices}}" bindchange="onChapterChange" data-idx="{{idx}}">
-          <view class="picker-value">{{item.chapterDisplay || '全部章节'}}<text class="picker-arrow">▼</text></view>
-        </picker>
+        <view class="picker-value" bindtap="onChapterTap" data-idx="{{idx}}">{{item.chapterDisplay || '全部章节'}}<text class="picker-arrow">▼</text></view>
       </view>
 
       <view class="module-remove" bindtap="onRemoveModule" data-idx="{{idx}}" wx:if="{{modules.length > 1}}">删除模块</view>
@@ -54,4 +52,23 @@
   </view>
 
   <view class="btn-primary save-btn" bindtap="onSave">保存</view>
+</view>
+
+<!-- 章节选择弹窗 -->
+<view class="chapter-mask" wx:if="{{chapterPickerVisible}}" bindtap="onChapterClose">
+  <view class="chapter-popup" catchtap="onPopupTap">
+    <view class="chapter-popup-header">
+      <text class="chapter-popup-title">选择章节</text>
+      <view class="chapter-popup-actions">
+        <text class="chapter-popup-all" bindtap="onChapterSelectAll">全选/取消</text>
+        <text class="chapter-popup-done" bindtap="onChapterDone">完成</text>
+      </view>
+    </view>
+    <scroll-view scroll-y class="chapter-list">
+      <view class="chapter-item" wx:for="{{chapterPickerOptions}}" wx:key="*this" data-name="{{item}}" bindtap="onChapterToggle">
+        <text>{{item}}</text>
+        <text class="chapter-check {{chapterPickerChecked[item] ? 'checked' : ''}}">{{chapterPickerChecked[item] ? '✓' : ''}}</text>
+      </view>
+    </scroll-view>
+  </view>
 </view>

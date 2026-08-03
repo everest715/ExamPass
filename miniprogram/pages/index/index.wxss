@@ -1,6 +1,11 @@
 /* miniprogram/pages/index/index.wxss */
 .container { padding: 20rpx 0; }
 
+.top-bar { display: flex; align-items: center; justify-content: space-between; padding: 0 32rpx 8rpx; }
+.greeting { font-size: 32rpx; font-weight: bold; color: #333; }
+.settings-btn { padding: 8rpx 16rpx; }
+.settings-icon { font-size: 44rpx; color: #FF6B35; }
+
 .stats-card { text-align: center; }
 .stats-row { display: flex; justify-content: space-around; }
 .stats-item { display: flex; flex-direction: column; align-items: center; }

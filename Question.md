@@ -4,17 +4,25 @@
 
 ## 文件格式
 
-题库文件为 JS 模块，放在 `miniprogram/data/` 目录下，命名格式：`{年级}_{科目}.js`
+题库文件为 JSON，放在 `docs/data/` 目录下，命名格式：`{年级}_{科目}.json`
 
-```js
-module.exports = {
-  grade: "高一",
-  subject: "数学",
-  questions: [
+```json
+{
+  "version": "1.0.0",
+  "grade": "高一",
+  "subject": "数学",
+  "questions": [
     // 题目数组，见下方各题型模板
   ]
-};
+}
 ```
+
+| 字段 | 说明 |
+|------|------|
+| `version` | 题库版本号，用于远程缓存校验 |
+| `grade` | 年级 |
+| `subject` | 科目 |
+| `questions` | 题目数组 |
 
 ## 通用字段
 
@@ -324,3 +332,5 @@ node scripts/validate-questions.js
 ```
 
 校验内容包括：JSON 格式、id 唯一性、type 合法性、chapter 必填、各题型专属字段完整性、模板变量格式、派生变量引用合法性、blanks 索引不越界等。
+
+校验脚本同时扫描 `miniprogram/data/`（本地 `.js` 模块）和 `docs/data/`（远程 `.json`），两种格式均支持。

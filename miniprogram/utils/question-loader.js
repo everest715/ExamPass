@@ -47,15 +47,16 @@ function instantiateQuestion(question) {
  */
 function getLocalData() {
   const files = [];
-  const localFiles = [
-    { grade: '高一', subject: '数学', file: '高一_数学' }
+  const registry = [
+    { grade: '高一', subject: '数学', loader: () => require('../data/高一_数学.js') },
+    { grade: '小学', subject: '数学', loader: () => require('../data/小学_数学_盈亏问题.js') }
   ];
-  for (const f of localFiles) {
+  for (const f of registry) {
     try {
-      const data = require(`../data/${f.file}.js`);
+      const data = f.loader();
       files.push({ grade: f.grade, subject: f.subject, data });
     } catch (e) {
-      console.error(`Failed to load local data ${f.file}:`, e);
+      console.error(`Failed to load local data ${f.grade}_${f.subject}:`, e);
     }
   }
   return files;

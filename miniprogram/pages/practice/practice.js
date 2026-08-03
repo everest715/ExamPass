@@ -4,6 +4,16 @@ const { selectQuestions } = require('../../utils/practice-engine');
 const { createInitialState, updateSM2State } = require('../../utils/sm2');
 const storage = require('../../utils/storage');
 
+// 根据当前填空输入类型过滤非法字符
+function sanitizeInput(value, inputType) {
+  if (inputType === 'digit') {
+    // 纯数字：只允许数字和小数点
+    return value.replace(/[^\d.]/g, '');
+  }
+  // 文本题：只允许字母、数字
+  return value.replace(/[^a-zA-Z0-9]/g, '');
+}
+
 Page({
   data: {
     questions: [],
@@ -24,7 +34,9 @@ Page({
     startTime: 0,
     // 竖式填空相关
     fillValues: [],
-    activeBlankIndex: -1
+    activeBlankIndex: -1,
+    // 填空输入类型：纯数字用 'digit'，含字母用 'text'
+    fillBlankInputType: 'digit'
   },
 
   onLoad(options) {
@@ -109,12 +121,15 @@ Page({
     if (question.type === 'fill_blank') {
       // 多空填空：将题干按 ___ 拆分，构建 parts 和 answers 数组
       const answers = question.answers || (question.answer ? [question.answer] : []);
+      // 根据答案判断输入类型：纯数字（含小数点）用 digit 键盘，否则用 text
+      const allNumeric = answers.every(a => /^[\d.]+$/.test(a));
       const parts = question.question.split(/_{3,}/);
       this.setData({
         inputAnswers: answers.map(() => ''),
         blankResults: [],
         fillBlankParts: parts,
-        fillBlankCount: answers.length
+        fillBlankCount: answers.length,
+        fillBlankInputType: allNumeric ? 'digit' : 'text'
       });
     }
   },
@@ -151,7 +166,8 @@ Page({
   // 填空题输入（单空，兼容旧格式）
   onInput(e) {
     if (this.data.submitted) return;
-    this.setData({ inputAnswer: e.detail.value });
+    const val = sanitizeInput(e.detail.value, this.data.fillBlankInputType);
+    this.setData({ inputAnswer: val });
   },
 
   // 填空题输入（多空）
@@ -159,7 +175,7 @@ Page({
     if (this.data.submitted) return;
     const idx = e.currentTarget.dataset.index;
     let inputAnswers = [...this.data.inputAnswers];
-    inputAnswers[idx] = e.detail.value;
+    inputAnswers[idx] = sanitizeInput(e.detail.value, this.data.fillBlankInputType);
     this.setData({ inputAnswers });
   },
 
@@ -172,7 +188,7 @@ Page({
   // 竖式计算 - 输入答案
   onVerticalInput(e) {
     if (this.data.submitted) return;
-    this.setData({ inputAnswer: e.detail.value });
+    this.setData({ inputAnswer: sanitizeInput(e.detail.value, 'digit') });
   },
 
   // 竖式填空 - 点击空位

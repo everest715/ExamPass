@@ -1,5 +1,13 @@
 <!-- miniprogram/pages/index/index.wxml -->
 <view class="container">
+  <!-- 顶部栏 -->
+  <view class="top-bar">
+    <text class="greeting">{{greeting}}</text>
+    <view class="settings-btn" bindtap="goSettings">
+      <text class="settings-icon">⚙</text>
+    </view>
+  </view>
+
   <!-- 今日统计卡片 -->
   <view class="card stats-card">
     <view class="stats-row">

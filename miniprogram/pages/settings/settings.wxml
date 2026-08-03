@@ -1,0 +1,52 @@
+<view class="container">
+  <!-- 个人信息 -->
+  <view class="card">
+    <text class="section-title">个人信息</text>
+
+    <view class="form-row">
+      <text class="form-label">昵称</text>
+      <input class="form-input" placeholder="请输入昵称" value="{{nickname}}" bindinput="onNicknameInput" maxlength="12" />
+    </view>
+
+    <view class="form-row">
+      <text class="form-label">年级</text>
+      <picker mode="selector" range="{{grades}}" value="{{gradeIndex}}" bindchange="onGradeChange">
+        <view class="picker-value">{{grades[gradeIndex]}}<text class="picker-arrow">▼</text></view>
+      </picker>
+    </view>
+  </view>
+
+  <!-- 练习设置 -->
+  <view class="card">
+    <text class="section-title">练习设置</text>
+
+    <view class="form-row">
+      <text class="form-label">每日目标</text>
+      <picker mode="selector" range="{{dailyGoals}}" value="{{dailyGoalIndex}}" bindchange="onDailyGoalChange">
+        <view class="picker-value">{{dailyGoals[dailyGoalIndex]}}<text class="picker-arrow">▼</text></view>
+      </picker>
+    </view>
+
+    <view class="form-row switch-row">
+      <text class="form-label">答题震动</text>
+      <switch checked="{{vibration}}" bindchange="onVibrationChange" color="#FF6B35" />
+    </view>
+
+    <view class="form-row switch-row">
+      <text class="form-label">自动跳转下一题</text>
+      <switch checked="{{autoNext}}" bindchange="onAutoNextChange" color="#FF6B35" />
+    </view>
+  </view>
+
+  <!-- 关于 -->
+  <view class="card about-card">
+    <text class="about-title">ExamPass 刷题小程序</text>
+    <text class="about-version">版本 {{version}}</text>
+  </view>
+
+  <!-- 清除数据 -->
+  <view class="card">
+    <text class="section-title">数据管理</text>
+    <view class="btn-danger" bindtap="onClearData">清除所有练习记录</view>
+  </view>
+</view>

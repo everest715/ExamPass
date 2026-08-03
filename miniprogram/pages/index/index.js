@@ -9,11 +9,26 @@ Page({
     totalQuestions: 0,
     answeredQuestions: 0,
     overallAccuracy: 0,
-    dueCount: 0
+    dueCount: 0,
+    greeting: ''
   },
 
   onShow() {
+    this.loadGreeting();
     this.loadStats();
+  },
+
+  loadGreeting() {
+    const settings = storage.getSettings();
+    const name = settings.nickname || '';
+    const hour = new Date().getHours();
+    let timeGreeting;
+    if (hour < 6) timeGreeting = '凌晨好';
+    else if (hour < 12) timeGreeting = '早上好';
+    else if (hour < 14) timeGreeting = '中午好';
+    else if (hour < 18) timeGreeting = '下午好';
+    else timeGreeting = '晚上好';
+    this.setData({ greeting: name ? `${timeGreeting}，${name}` : timeGreeting });
   },
 
   loadStats() {
@@ -50,5 +65,9 @@ Page({
 
   goStats() {
     wx.switchTab({ url: '/pages/stats/stats' });
+  },
+
+  goSettings() {
+    wx.navigateTo({ url: '/pages/settings/settings' });
   }
 });

@@ -8,7 +8,7 @@
 
   <!-- 题目区 -->
   <view class="card question-card">
-    <view class="question-text">{{currentQuestion.question}}</view>
+    <view class="question-text" wx:if="{{!(currentQuestion.type === 'fill_blank' && fillBlankCount > 1)}}">{{currentQuestion.question}}</view>
 
     <!-- 单选题 -->
     <view wx:if="{{currentQuestion.type === 'single_choice'}}" class="options">
@@ -35,14 +35,16 @@
     <!-- 填空题 -->
     <view wx:if="{{currentQuestion.type === 'fill_blank'}}" class="fill-blank">
       <block wx:if="{{fillBlankCount > 1}}">
-        <view class="fill-multi" wx:for="{{fillBlankParts}}" wx:key="*this" wx:for-index="partIdx">
-          <text class="fill-text">{{item}}</text>
-          <input wx:if="{{partIdx < fillBlankCount}}" class="fill-input-inline {{submitted && blankResults[partIdx] ? 'blank-correct' : ''}} {{submitted && !blankResults[partIdx] ? 'blank-wrong' : ''}}"
-                 placeholder="?" value="{{inputAnswers[partIdx]}}"
-                 data-index="{{partIdx}}" bindinput="onBlankInput" disabled="{{submitted}}" />
+        <view class="fill-inline">
+          <block wx:for="{{fillBlankParts}}" wx:key="*this" wx:for-index="partIdx">
+            <text class="fill-text">{{item}}</text>
+            <input wx:if="{{partIdx < fillBlankCount}}" class="fill-input-inline {{submitted && blankResults[partIdx] ? 'blank-correct' : ''}} {{submitted && !blankResults[partIdx] ? 'blank-wrong' : ''}}"
+                   type="{{fillBlankInputType}}" placeholder="?" value="{{inputAnswers[partIdx]}}"
+                   data-index="{{partIdx}}" bindinput="onBlankInput" disabled="{{submitted}}" />
+          </block>
         </view>
       </block>
-      <input wx:else class="fill-input" placeholder="请输入答案" value="{{inputAnswer}}"
+      <input wx:else class="fill-input" type="{{fillBlankInputType}}" placeholder="请输入答案" value="{{inputAnswer}}"
              bindinput="onInput" disabled="{{submitted}}" />
     </view>
 
@@ -67,7 +69,7 @@
         </view>
         <view class="v-line"></view>
         <view class="v-input-row">
-          <input class="v-input" placeholder="?" value="{{inputAnswer}}"
+          <input class="v-input" type="digit" placeholder="?" value="{{inputAnswer}}"
                  bindinput="onVerticalInput" disabled="{{submitted}}" />
         </view>
       </view>

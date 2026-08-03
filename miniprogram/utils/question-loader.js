@@ -5,9 +5,11 @@ const { instantiateTemplate } = require('./expr-engine');
 // 远程题库地址（GitHub Pages）
 const REMOTE_BASE = 'https://everest715.github.io/ExamPass/data';
 
-// 本地缓存 key
-const CACHE_KEY = 'exam_remote_cache';
-const CACHE_VERSION_KEY = 'exam_remote_version';
+// 本地题库版本（与 catalog.json version 同步，远程版本低于此值时忽略远程）
+const LOCAL_VERSION = '1.0.3';
+
+// 模块级数据：initData 加载后存此，getDataFileList 优先使用
+let _loadedData = null;
 
 /**
  * 从已加载的题库数据构建目录树
@@ -63,19 +65,6 @@ function getLocalData() {
 }
 
 /**
- * 获取缓存到 Storage 的远程题库
- */
-function getCachedData() {
-  try {
-    const cached = wx.getStorageSync(CACHE_KEY);
-    if (cached && Array.isArray(cached) && cached.length > 0) {
-      return cached;
-    }
-  } catch (e) {}
-  return null;
-}
-
-/**
  * 从远程拉取题库目录和所有题库文件
  * @param {Function} callback - (success, dataFiles)
  */
@@ -88,12 +77,19 @@ function fetchRemoteData(callback) {
         return;
       }
       const catalog = res.data;
+      const remoteVersion = catalog.version || '0';
       const filesToLoad = catalog.files;
+
+      // 远程版本低于本地版本时，忽略远程数据（CDN 缓存未更新等场景）
+      if (remoteVersion < LOCAL_VERSION) {
+        callback(false, null);
+        return;
+      }
+
       let loaded = [];
       let pending = filesToLoad.length;
 
       if (pending === 0) {
-        // 远程为空，用本地
         callback(false, null);
         return;
       }
@@ -107,16 +103,7 @@ function fetchRemoteData(callback) {
             }
             pending--;
             if (pending === 0) {
-              if (loaded.length > 0) {
-                // 缓存到本地
-                try {
-                  wx.setStorageSync(CACHE_KEY, loaded);
-                  wx.setStorageSync(CACHE_VERSION_KEY, catalog.version || '0');
-                } catch (e) {}
-                callback(true, loaded);
-              } else {
-                callback(false, null);
-              }
+              callback(loaded.length > 0, loaded.length > 0 ? loaded : null);
             }
           },
           fail: () => {
@@ -135,32 +122,25 @@ function fetchRemoteData(callback) {
 }
 
 /**
- * 获取题库数据列表（同步，优先用缓存或本地）
+ * 获取题库数据列表（同步，优先用 _loadedData，否则用本地）
  */
 function getDataFileList() {
-  // 优先用远程缓存
-  const cached = getCachedData();
-  if (cached) return cached;
-  // fallback 到本地
+  if (_loadedData) return _loadedData;
   return getLocalData();
 }
 
 /**
  * 异步加载题库数据（优先远程，失败用本地）
- * 在 app.js onLaunch 中调用，加载完成后缓存
+ * 在 app.js onLaunch 中调用，加载完成后存入 _loadedData
  */
 function initData(callback) {
-  // 先清除旧缓存，确保 getDataFileList() 在远程返回前回退到本地最新数据
-  try {
-    wx.removeStorageSync(CACHE_KEY);
-    wx.removeStorageSync(CACHE_VERSION_KEY);
-  } catch (e) {}
-
   fetchRemoteData((success, dataFiles) => {
     if (success && dataFiles) {
+      _loadedData = dataFiles;
       callback(dataFiles);
     } else {
-      callback(getLocalData());
+      _loadedData = getLocalData();
+      callback(_loadedData);
     }
   });
 }
@@ -170,12 +150,16 @@ function initData(callback) {
  */
 function loadQuestions(grade, subject) {
   const files = getDataFileList();
-  const match = files.find(f => f.grade === grade && f.subject === subject);
-  if (match) {
-    return match.data.questions || [];
+  const questions = [];
+  for (const f of files) {
+    if (f.grade === grade && f.subject === subject) {
+      const qs = f.data.questions || [];
+      for (const q of qs) {
+        questions.push(q);
+      }
+    }
   }
-  console.error('Failed to load questions for:', grade, subject);
-  return [];
+  return questions;
 }
 
 module.exports = {

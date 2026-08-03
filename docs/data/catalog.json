@@ -1,0 +1,10 @@
+{
+  "version": "1.0.0",
+  "files": [
+    {
+      "grade": "高一",
+      "subject": "数学",
+      "file": "高一_数学.json"
+    }
+  ]
+}

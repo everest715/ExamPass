@@ -5,7 +5,9 @@
     "pages/practice/practice",
     "pages/wrong-book/wrong-book",
     "pages/stats/stats",
-    "pages/settings/settings"
+    "pages/settings/settings",
+    "pages/exam/exam",
+    "pages/exam-create/exam-create"
   ],
   "window": {
     "navigationBarTitleText": "ExamPass",

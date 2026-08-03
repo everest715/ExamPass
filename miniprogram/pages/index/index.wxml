@@ -45,6 +45,10 @@
       <text class="action-icon">❌</text>
       <text class="action-text">错题本</text>
     </view>
+    <view class="action-item" style="background-color: #6C5CE7;" bindtap="goExam">
+      <text class="action-icon">📋</text>
+      <text class="action-text">考试准备</text>
+    </view>
   </view>
 
   <!-- 总览 -->

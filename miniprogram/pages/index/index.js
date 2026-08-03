@@ -69,5 +69,9 @@ Page({
 
   goSettings() {
     wx.navigateTo({ url: '/pages/settings/settings' });
+  },
+
+  goExam() {
+    wx.navigateTo({ url: '/pages/exam/exam' });
   }
 });

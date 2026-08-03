@@ -1,0 +1,21 @@
+.container { padding: 20rpx 0 120rpx; }
+
+.exam-card { position: relative; }
+.exam-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16rpx; }
+.exam-name { font-size: 34rpx; font-weight: bold; color: #333; }
+.exam-tag { font-size: 24rpx; padding: 6rpx 20rpx; border-radius: 20rpx; }
+.tag-sm2 { background: #EEE; color: #6C5CE7; }
+.tag-fixed { background: #FFF3E0; color: #FF9800; }
+.exam-info { display: flex; gap: 24rpx; }
+.exam-modules { font-size: 26rpx; color: #999; }
+.exam-progress { font-size: 26rpx; color: #FF6B35; }
+.exam-delete {
+  position: absolute; top: 32rpx; right: 32rpx;
+  font-size: 24rpx; color: #F44336; padding: 8rpx 16rpx;
+}
+
+.empty-state { display: flex; flex-direction: column; align-items: center; padding: 120rpx 0; }
+.empty-text { font-size: 32rpx; color: #999; }
+.empty-hint { font-size: 26rpx; color: #CCC; margin-top: 12rpx; }
+
+.add-btn { margin: 40rpx 20rpx; }

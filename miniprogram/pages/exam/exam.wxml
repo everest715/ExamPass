@@ -1,0 +1,23 @@
+<view class="container">
+  <block wx:if="{{plans.length > 0}}">
+    <view class="exam-card card" wx:for="{{plans}}" wx:key="id" data-id="{{item.id}}" bindtap="onExamTap">
+      <view class="exam-header">
+        <text class="exam-name">{{item.name}}</text>
+        <text class="exam-tag {{item.mode === 'sm2' ? 'tag-sm2' : 'tag-fixed'}}">{{item.mode === 'sm2' ? 'SM-2' : item.totalDays + '天计划'}}</text>
+      </view>
+      <view class="exam-info">
+        <text class="exam-modules">{{item.modules.length}}个模块</text>
+        <text class="exam-progress" wx:if="{{item.mode === 'fixed'}}">第{{item.currentDay}}/{{item.totalDays}}天</text>
+        <text class="exam-progress" wx:if="{{item.mode === 'sm2'}}">{{item.dueCount || 0}}题待复习</text>
+      </view>
+      <view class="exam-delete" catchtap="onDelete" data-id="{{item.id}}">删除</view>
+    </view>
+  </block>
+
+  <view class="empty-state" wx:else>
+    <text class="empty-text">还没有考试计划</text>
+    <text class="empty-hint">点击下方按钮创建</text>
+  </view>
+
+  <view class="btn-primary add-btn" bindtap="goCreate">+ 新建考试</view>
+</view>

@@ -1,0 +1,57 @@
+<view class="container">
+  <!-- 基本信息 -->
+  <view class="card form-card">
+    <view class="form-row">
+      <text class="form-label">考试名称</text>
+      <input class="form-input" placeholder="如：期中复习" value="{{name}}" bindinput="onNameInput" maxlength="20" />
+    </view>
+
+    <view class="form-row">
+      <text class="form-label">练习模式</text>
+      <picker mode="selector" range="{{modes}}" value="{{modeIndex}}" bindchange="onModeChange">
+        <view class="picker-value">{{modes[modeIndex]}}<text class="picker-arrow">▼</text></view>
+      </picker>
+    </view>
+
+    <view class="form-row" wx:if="{{modeIndex === 1}}">
+      <text class="form-label">计划天数</text>
+      <picker mode="selector" range="{{dayOptions}}" value="{{dayIndex}}" bindchange="onDayChange">
+        <view class="picker-value">{{dayOptions[dayIndex]}}<text class="picker-arrow">▼</text></view>
+      </picker>
+    </view>
+  </view>
+
+  <!-- 科目模块 -->
+  <view class="card">
+    <text class="section-title">科目模块</text>
+
+    <view class="module-item" wx:for="{{modules}}" wx:key="index" wx:for-index="idx">
+      <view class="form-row">
+        <text class="form-label">年级</text>
+        <picker mode="selector" range="{{grades}}" value="{{item.gradeIndex}}" bindchange="onGradeChange" data-idx="{{idx}}">
+          <view class="picker-value">{{grades[item.gradeIndex] || '请选择'}}<text class="picker-arrow">▼</text></view>
+        </picker>
+      </view>
+
+      <view class="form-row">
+        <text class="form-label">科目</text>
+        <picker mode="selector" range="{{item.subjects}}" value="{{item.subjectIndex}}" bindchange="onSubjectChange" data-idx="{{idx}}">
+          <view class="picker-value">{{item.subjects[item.subjectIndex] || '请选择'}}<text class="picker-arrow">▼</text></view>
+        </picker>
+      </view>
+
+      <view class="form-row">
+        <text class="form-label">章节</text>
+        <picker mode="multiSelector" range="{{item.chapterList}}" value="{{item.chapterIndices}}" bindchange="onChapterChange" data-idx="{{idx}}">
+          <view class="picker-value">{{item.chapterDisplay || '全部章节'}}<text class="picker-arrow">▼</text></view>
+        </picker>
+      </view>
+
+      <view class="module-remove" bindtap="onRemoveModule" data-idx="{{idx}}" wx:if="{{modules.length > 1}}">删除模块</view>
+    </view>
+
+    <view class="add-module-btn" bindtap="onAddModule">+ 添加模块</view>
+  </view>
+
+  <view class="btn-primary save-btn" bindtap="onSave">保存</view>
+</view>

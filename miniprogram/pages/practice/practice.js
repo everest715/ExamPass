@@ -1,7 +1,7 @@
 // miniprogram/pages/practice/practice.js
 const questionLoader = require('../../utils/question-loader');
-const { selectQuestions } = require('../../utils/practice-engine');
-const { createInitialState, updateSM2State } = require('../../utils/sm2');
+const { selectQuestions, shuffle } = require('../../utils/practice-engine');
+const { createInitialState, updateSM2State, isDue } = require('../../utils/sm2');
 const storage = require('../../utils/storage');
 
 // 根据当前填空输入类型过滤非法字符
@@ -40,13 +40,38 @@ Page({
   },
 
   onLoad(options) {
-    const { grade, subject, chapter, mode, count } = options;
+    const { grade, subject, chapter, mode, count, examId } = options;
     const numCount = parseInt(count) || 20;
     const decodedChapter = chapter ? decodeURIComponent(chapter) : null;
 
     // 加载题目
     let allQuestions;
-    if (mode === 'wrong' && !grade) {
+    let examMode = null;
+
+    if (examId) {
+      // 考试准备模式
+      const plan = storage.getExamPlans().find(p => p.id === examId);
+      if (!plan) {
+        wx.showToast({ title: '考试计划不存在', icon: 'none' });
+        setTimeout(() => wx.navigateBack(), 1500);
+        return;
+      }
+      allQuestions = [];
+      const fileList = questionLoader.getDataFileList();
+      for (const m of plan.modules) {
+        let qs = [];
+        for (const f of fileList) {
+          if (f.grade === m.grade && f.subject === m.subject) {
+            qs = qs.concat(f.data.questions || []);
+          }
+        }
+        if (m.chapters && m.chapters.length > 0) {
+          qs = qs.filter(q => m.chapters.includes(q.chapter));
+        }
+        allQuestions = allQuestions.concat(qs);
+      }
+      examMode = { id: examId, mode: plan.mode, totalDays: plan.totalDays, currentDay: plan.currentDay };
+    } else if (mode === 'wrong' && !grade) {
       // 错题本入口：加载所有题库
       const fileList = questionLoader.getDataFileList();
       allQuestions = [];
@@ -63,7 +88,29 @@ Page({
 
     const records = storage.getAllRecords();
     const chapterFilter = decodedChapter || null;
-    let selected = selectQuestions(allQuestions, records, mode, numCount, chapterFilter);
+
+    let selected;
+
+    if (examMode && examMode.mode === 'sm2') {
+      // SM-2 模式：抽取 due 题目
+      const dueQuestions = allQuestions.filter(q => {
+        const rec = records[q.id];
+        return !rec || !rec.sm2 || isDue(rec.sm2);
+      });
+      selected = shuffle(dueQuestions).slice(0, 20);
+    } else if (examMode && examMode.mode === 'fixed') {
+      // fixed 模式：按天数分配当日题量
+      const perDay = Math.ceil(allQuestions.length / examMode.totalDays);
+      const start = (examMode.currentDay - 1) * perDay;
+      selected = allQuestions.slice(start, start + perDay);
+      if (selected.length === 0 && examMode.currentDay > examMode.totalDays) {
+        wx.showToast({ title: '复习计划已完成', icon: 'none' });
+        setTimeout(() => wx.navigateBack(), 1500);
+        return;
+      }
+    } else {
+      selected = selectQuestions(allQuestions, records, mode, numCount, chapterFilter);
+    }
 
     // 实例化模板题目
     selected = selected.map(q => questionLoader.instantiateQuestion(q));
@@ -72,6 +119,11 @@ Page({
       wx.showToast({ title: '没有符合条件的题目', icon: 'none' });
       setTimeout(() => wx.navigateBack(), 1500);
       return;
+    }
+
+    // 考试模式信息存到 data
+    if (examMode) {
+      this.setData({ _examMode: examMode });
     }
 
     // 预计算选项字母映射（WXML 不支持数组索引表达式和 indexOf）
@@ -305,6 +357,17 @@ Page({
       const duration = Math.round((Date.now() - this.data.startTime) / 1000);
       const total = this.data.questions.length;
       const correct = this.data.correctCount;
+
+      // 考试 fixed 模式：完成后递增 currentDay
+      if (this.data._examMode && this.data._examMode.mode === 'fixed') {
+        const plans = storage.getExamPlans();
+        const plan = plans.find(p => p.id === this.data._examMode.id);
+        if (plan && plan.currentDay < plan.totalDays) {
+          plan.currentDay++;
+          storage.saveExamPlan(plan);
+        }
+      }
+
       this.setData({
         showResult: true,
         resultSummary: {

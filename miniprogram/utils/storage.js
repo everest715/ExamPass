@@ -8,6 +8,7 @@
 const RECORDS_KEY = 'exam_records';
 const DAILY_STATS_KEY = 'exam_daily_stats';
 const SETTINGS_KEY = 'exam_settings';
+const EXAM_PLANS_KEY = 'exam_plans';
 
 /**
  * 格式化日期为 YYYY-MM-DD
@@ -137,6 +138,38 @@ function saveSettings(settings) {
   wx.setStorageSync(SETTINGS_KEY, settings);
 }
 
+/**
+ * 获取所有考试计划
+ * @returns {Array} 考试计划数组
+ */
+function getExamPlans() {
+  return wx.getStorageSync(EXAM_PLANS_KEY) || [];
+}
+
+/**
+ * 保存考试计划（新增或更新）
+ * @param {Object} plan - 考试计划对象
+ */
+function saveExamPlan(plan) {
+  const plans = getExamPlans();
+  const idx = plans.findIndex(p => p.id === plan.id);
+  if (idx > -1) {
+    plans[idx] = plan;
+  } else {
+    plans.push(plan);
+  }
+  wx.setStorageSync(EXAM_PLANS_KEY, plans);
+}
+
+/**
+ * 删除考试计划
+ * @param {string} id - 考试计划 ID
+ */
+function deleteExamPlan(id) {
+  const plans = getExamPlans().filter(p => p.id !== id);
+  wx.setStorageSync(EXAM_PLANS_KEY, plans);
+}
+
 module.exports = {
   getRecord,
   saveRecord,
@@ -148,5 +181,8 @@ module.exports = {
   getRecentStats,
   getSettings,
   saveSettings,
-  formatDate
+  formatDate,
+  getExamPlans,
+  saveExamPlan,
+  deleteExamPlan
 };

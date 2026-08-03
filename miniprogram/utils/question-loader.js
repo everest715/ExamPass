@@ -43,14 +43,20 @@ function instantiateQuestion(question) {
 
 /**
  * 获取本地 fallback 题库（打包在代码包内）
+ * 新增题库时：1) 在 miniprogram/data/ 下放 JS 文件  2) 在这里加 require
  */
 function getLocalData() {
   const files = [];
-  try {
-    const data = require('../data/高一_数学.js');
-    files.push({ grade: '高一', subject: '数学', data });
-  } catch (e) {
-    console.error('Failed to load local data:', e);
+  const localFiles = [
+    { grade: '高一', subject: '数学', file: '高一_数学' }
+  ];
+  for (const f of localFiles) {
+    try {
+      const data = require(`../data/${f.file}.js`);
+      files.push({ grade: f.grade, subject: f.subject, data });
+    } catch (e) {
+      console.error(`Failed to load local data ${f.file}:`, e);
+    }
   }
   return files;
 }

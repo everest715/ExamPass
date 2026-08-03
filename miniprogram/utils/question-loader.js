@@ -8,6 +8,10 @@ const REMOTE_BASE = 'https://everest715.github.io/ExamPass/data';
 // 本地题库版本（与 catalog.json version 同步，远程版本低于此值时忽略远程）
 const LOCAL_VERSION = '1.0.3';
 
+// Storage 缓存 key
+const CACHE_KEY = 'exam_remote_cache';
+const CACHE_VERSION_KEY = 'exam_remote_version';
+
 // 模块级数据：initData 加载后存此，getDataFileList 优先使用
 let _loadedData = null;
 
@@ -73,16 +77,28 @@ function fetchRemoteData(callback) {
     url: `${REMOTE_BASE}/catalog.json`,
     success: (res) => {
       if (res.statusCode !== 200 || !res.data || !res.data.files) {
+        console.error('[question-loader] catalog 请求失败: statusCode', res.statusCode);
         callback(false, null);
         return;
       }
       const catalog = res.data;
       const remoteVersion = catalog.version || '0';
       const filesToLoad = catalog.files;
+      console.log('[question-loader] catalog 版本:', remoteVersion, '文件:', filesToLoad.map(f => f.file));
 
       // 远程版本低于本地版本时，忽略远程数据（CDN 缓存未更新等场景）
       if (remoteVersion < LOCAL_VERSION) {
+        console.warn('[question-loader] 远程版本', remoteVersion, '< 本地版本', LOCAL_VERSION, '，忽略远程数据');
         callback(false, null);
+        return;
+      }
+
+      // 版本与缓存一致，直接用缓存，跳过文件下载
+      const cachedVersion = wx.getStorageSync(CACHE_VERSION_KEY);
+      const cachedData = wx.getStorageSync(CACHE_KEY);
+      if (remoteVersion === cachedVersion && cachedData && cachedData.length > 0) {
+        console.log('[question-loader] 远程版本与缓存一致，跳过下载，使用缓存');
+        callback(true, cachedData);
         return;
       }
 
@@ -99,14 +115,25 @@ function fetchRemoteData(callback) {
           url: `${REMOTE_BASE}/${f.file}`,
           success: (fileRes) => {
             if (fileRes.statusCode === 200 && fileRes.data) {
+              console.log('[question-loader] 下载成功:', f.file, '- 题目数:', (fileRes.data.questions || []).length);
               loaded.push({ grade: f.grade, subject: f.subject, data: fileRes.data });
+            } else {
+              console.error('[question-loader] 下载失败:', f.file, 'statusCode', fileRes.statusCode);
             }
             pending--;
             if (pending === 0) {
+              if (loaded.length > 0) {
+                try {
+                  wx.setStorageSync(CACHE_KEY, loaded);
+                  wx.setStorageSync(CACHE_VERSION_KEY, remoteVersion);
+                } catch (e) {}
+                console.log('[question-loader] 远程加载完成:', loaded.length, '/', filesToLoad.length, '个文件');
+              }
               callback(loaded.length > 0, loaded.length > 0 ? loaded : null);
             }
           },
-          fail: () => {
+          fail: (err) => {
+            console.error('[question-loader] 下载失败:', f.file, err.errMsg || '');
             pending--;
             if (pending === 0) {
               callback(loaded.length > 0, loaded.length > 0 ? loaded : null);
@@ -115,7 +142,8 @@ function fetchRemoteData(callback) {
         });
       });
     },
-    fail: () => {
+    fail: (err) => {
+      console.error('[question-loader] catalog 请求失败:', err.errMsg || '');
       callback(false, null);
     }
   });
@@ -134,11 +162,21 @@ function getDataFileList() {
  * 在 app.js onLaunch 中调用，加载完成后存入 _loadedData
  */
 function initData(callback) {
+  // 尝试读取缓存，让 getDataFileList 在远程返回前能拿到数据
+  const cachedData = wx.getStorageSync(CACHE_KEY);
+  if (cachedData && cachedData.length > 0) {
+    _loadedData = cachedData;
+  }
+
   fetchRemoteData((success, dataFiles) => {
     if (success && dataFiles) {
       _loadedData = dataFiles;
       callback(dataFiles);
+    } else if (_loadedData) {
+      // 远程失败但有缓存，继续用缓存
+      callback(_loadedData);
     } else {
+      // 无缓存，用本地
       _loadedData = getLocalData();
       callback(_loadedData);
     }

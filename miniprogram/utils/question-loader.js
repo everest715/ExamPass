@@ -150,15 +150,16 @@ function getDataFileList() {
  * 在 app.js onLaunch 中调用，加载完成后缓存
  */
 function initData(callback) {
+  // 先清除旧缓存，确保 getDataFileList() 在远程返回前回退到本地最新数据
+  try {
+    wx.removeStorageSync(CACHE_KEY);
+    wx.removeStorageSync(CACHE_VERSION_KEY);
+  } catch (e) {}
+
   fetchRemoteData((success, dataFiles) => {
     if (success && dataFiles) {
       callback(dataFiles);
     } else {
-      // 远程失败，清除过期缓存，回退到本地
-      try {
-        wx.removeStorageSync(CACHE_KEY);
-        wx.removeStorageSync(CACHE_VERSION_KEY);
-      } catch (e) {}
       callback(getLocalData());
     }
   });

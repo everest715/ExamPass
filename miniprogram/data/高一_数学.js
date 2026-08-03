@@ -24,9 +24,9 @@ module.exports = {
       "id": "g1m_003",
       "type": "fill_blank",
       "chapter": "函数",
-      "question": "f(x) = 2x + 3，则 f(1) = ___",
-      "answer": "5",
-      "explanation": "f(1) = 2×1 + 3 = 5",
+      "question": "f(x) = 2x + 3，则 f(1) = ___，f(2) = ___",
+      "answers": ["5", "7"],
+      "explanation": "f(1) = 2×1 + 3 = 5，f(2) = 2×2 + 3 = 7",
       "matchMode": "exact"
     },
     {
@@ -98,10 +98,10 @@ module.exports = {
         "a": {"min": 5, "max": 20},
         "b": {"min": 1, "max": 8}
       },
-      "question": "小明有{a}个苹果，吃了{b}个，还剩几个？",
-      "answer": "{a - b}",
+      "question": "小明有{a}个苹果，吃了{b}个，还剩___个；小红给了他3个，现在共有___个。",
+      "answers": ["{a - b}", "{a - b + 3}"],
       "matchMode": "exact",
-      "explanation": "{a} - {b} = {a - b}"
+      "explanation": "第一次：{a} - {b} = {a - b}；第二次：{a - b} + 3 = {a - b + 3}"
     },
     {
       "id": "g1m_011",

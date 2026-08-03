@@ -73,22 +73,43 @@ module.exports = {
 
 ### 3. 填空题（fill_blank）
 
+支持单空和多空。题干中用 `___`（3 个及以上下划线）标记空位。
+
+#### 单空填空
+
 ```json
 {
   "id": "g1m_003",
   "type": "fill_blank",
   "chapter": "函数",
-  "question": "f(x) = 2x + 3，则 f(1) = ___",
-  "answer": "5",
+  "question": "sin(30°) = ___",
+  "answer": "0.5",
   "matchMode": "exact",
-  "explanation": "f(1) = 2×1 + 3 = 5"
+  "explanation": "sin(30°) = 1/2 = 0.5"
+}
+```
+
+#### 多空填空
+
+```json
+{
+  "id": "g1m_003",
+  "type": "fill_blank",
+  "chapter": "函数",
+  "question": "f(x) = 2x + 3，则 f(1) = ___，f(2) = ___",
+  "answers": ["5", "7"],
+  "explanation": "f(1) = 2×1 + 3 = 5，f(2) = 2×2 + 3 = 7",
+  "matchMode": "exact"
 }
 ```
 
 | 字段 | 说明 |
 |------|------|
-| `answer` | 正确答案字符串 |
+| `answer` | 单空填空答案（字符串），兼容旧格式 |
+| `answers` | 多空填空答案数组，与题干中 `___` 的数量一一对应 |
 | `matchMode` | 匹配模式，目前仅支持 `"exact"`（精确匹配） |
+
+> **注意：** 多空填空用 `answers`（数组），单空填空用 `answer`（字符串）或 `answers`（单元素数组均可）。多空时 `___` 的数量必须与 `answers` 数组长度一致。
 
 ### 4. 判断题（true_false）
 
@@ -192,7 +213,7 @@ module.exports = {
 
 ### 模板示例
 
-#### 单步应用题（填空）
+#### 单步应用题（填空，多空）
 
 ```json
 {
@@ -204,10 +225,10 @@ module.exports = {
     "a": {"min": 5, "max": 20},
     "b": {"min": 1, "max": 8}
   },
-  "question": "小明有{a}个苹果，吃了{b}个，还剩几个？",
-  "answer": "{a - b}",
+  "question": "小明有{a}个苹果，吃了{b}个，还剩___个；小红给了他3个，现在共有___个。",
+  "answers": ["{a - b}", "{a - b + 3}"],
   "matchMode": "exact",
-  "explanation": "{a} - {b} = {a - b}"
+  "explanation": "第一次：{a} - {b} = {a - b}；第二次：{a - b} + 3 = {a - b + 3}"
 }
 ```
 

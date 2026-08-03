@@ -13,6 +13,8 @@ Page({
     selectedAnswer: '',
     selectedOptions: [],
     inputAnswer: '',
+    inputAnswers: [],
+    blankResults: [],
     submitted: false,
     isCorrect: false,
     progress: '0/0',
@@ -104,6 +106,17 @@ Page({
       const symbols = { add: '+', subtract: '−', multiply: '×', divide: '÷' };
       this.setData({ operationSymbol: symbols[question.operation] || '+' });
     }
+    if (question.type === 'fill_blank') {
+      // 多空填空：将题干按 ___ 拆分，构建 parts 和 answers 数组
+      const answers = question.answers || (question.answer ? [question.answer] : []);
+      const parts = question.question.split(/_{3,}/);
+      this.setData({
+        inputAnswers: answers.map(() => ''),
+        blankResults: [],
+        fillBlankParts: parts,
+        fillBlankCount: answers.length
+      });
+    }
   },
 
   // 选择题 - 单选
@@ -135,10 +148,19 @@ Page({
     this.setData({ selectedOptions: selected, multiOptions });
   },
 
-  // 填空题输入
+  // 填空题输入（单空，兼容旧格式）
   onInput(e) {
     if (this.data.submitted) return;
     this.setData({ inputAnswer: e.detail.value });
+  },
+
+  // 填空题输入（多空）
+  onBlankInput(e) {
+    if (this.data.submitted) return;
+    const idx = e.currentTarget.dataset.index;
+    let inputAnswers = [...this.data.inputAnswers];
+    inputAnswers[idx] = e.detail.value;
+    this.setData({ inputAnswers });
   },
 
   // 判断题
@@ -190,6 +212,7 @@ Page({
     const q = this.data.currentQuestion;
     let userAnswer = '';
     let correct = false;
+    let blankResults = null;
 
     switch (q.type) {
       case 'single_choice':
@@ -201,8 +224,17 @@ Page({
         correct = userAnswer === q.answer;
         break;
       case 'fill_blank':
-        userAnswer = this.data.inputAnswer.trim();
-        correct = userAnswer === q.answer;
+        if (q.answers && Array.isArray(q.answers)) {
+          // 多空填空
+          const userAnswers = this.data.inputAnswers.map(a => (a || '').trim());
+          const expected = q.answers;
+          blankResults = userAnswers.map((a, i) => a === expected[i]);
+          correct = blankResults.every(r => r);
+        } else {
+          // 单空填空（兼容旧格式）
+          userAnswer = this.data.inputAnswer.trim();
+          correct = userAnswer === q.answer;
+        }
         break;
       case 'true_false':
         userAnswer = this.data.selectedAnswer;
@@ -243,7 +275,8 @@ Page({
     this.setData({
       submitted: true,
       isCorrect: correct,
-      correctCount: newCorrectCount
+      correctCount: newCorrectCount,
+      blankResults: blankResults || []
     });
   },
 
@@ -273,6 +306,8 @@ Page({
       selectedAnswer: '',
       selectedOptions: [],
       inputAnswer: '',
+      inputAnswers: [],
+      blankResults: [],
       submitted: false,
       isCorrect: false,
       progress: `${nextIndex + 1}/${this.data.questions.length}`,

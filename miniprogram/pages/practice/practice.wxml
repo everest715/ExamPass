@@ -34,7 +34,15 @@
 
     <!-- 填空题 -->
     <view wx:if="{{currentQuestion.type === 'fill_blank'}}" class="fill-blank">
-      <input class="fill-input" placeholder="请输入答案" value="{{inputAnswer}}"
+      <block wx:if="{{fillBlankCount > 1}}">
+        <view class="fill-multi" wx:for="{{fillBlankParts}}" wx:key="*this" wx:for-index="partIdx">
+          <text class="fill-text">{{item}}</text>
+          <input wx:if="{{partIdx < fillBlankCount}}" class="fill-input-inline {{submitted && blankResults[partIdx] ? 'blank-correct' : ''}} {{submitted && !blankResults[partIdx] ? 'blank-wrong' : ''}}"
+                 placeholder="?" value="{{inputAnswers[partIdx]}}"
+                 data-index="{{partIdx}}" bindinput="onBlankInput" disabled="{{submitted}}" />
+        </view>
+      </block>
+      <input wx:else class="fill-input" placeholder="请输入答案" value="{{inputAnswer}}"
              bindinput="onInput" disabled="{{submitted}}" />
     </view>
 

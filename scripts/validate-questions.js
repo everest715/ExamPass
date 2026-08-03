@@ -64,8 +64,17 @@ function validateQuestion(file, q) {
       break;
 
     case 'fill_blank':
-      if (!q.answer) {
-        error(file, q.id, '填空题缺少 answer');
+      if (!q.answer && !q.answers) {
+        error(file, q.id, '填空题缺少 answer 或 answers');
+      }
+      if (q.answers && !Array.isArray(q.answers)) {
+        error(file, q.id, '填空题 answers 应为数组');
+      }
+      if (q.answers && q.question) {
+        const blankCount = (q.question.match(/_{3,}/g) || []).length;
+        if (blankCount > 0 && blankCount !== q.answers.length) {
+          error(file, q.id, `填空题空位数 (${blankCount}) 与 answers 数量 (${q.answers.length}) 不一致`);
+        }
       }
       if (!q.matchMode || !VALID_MATCH_MODES.includes(q.matchMode)) {
         error(file, q.id, `填空题 matchMode 无效: ${q.matchMode}`);

@@ -248,8 +248,9 @@ Page({
           correct = blankResults.every(r => r);
         } else {
           // 单空填空（兼容旧格式）
-          userAnswer = this.data.inputAnswer.trim();
+          userAnswer = (this.data.inputAnswers[0] || '').trim();
           correct = userAnswer === q.answer;
+          blankResults = [correct];
         }
         break;
       case 'true_false':

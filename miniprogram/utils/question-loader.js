@@ -154,7 +154,11 @@ function initData(callback) {
     if (success && dataFiles) {
       callback(dataFiles);
     } else {
-      // 远程失败，用本地
+      // 远程失败，清除过期缓存，回退到本地
+      try {
+        wx.removeStorageSync(CACHE_KEY);
+        wx.removeStorageSync(CACHE_VERSION_KEY);
+      } catch (e) {}
       callback(getLocalData());
     }
   });

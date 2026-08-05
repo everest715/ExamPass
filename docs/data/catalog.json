@@ -1,5 +1,5 @@
 {
-  "version": "1.0.3",
+  "version": "1.0.4",
   "files": [
     {
       "grade": "小学",
@@ -10,6 +10,26 @@
       "grade": "小学",
       "subject": "数学",
       "file": "小学_数学_归一问题.json"
+    },
+    {
+      "grade": "小学",
+      "subject": "数学",
+      "file": "小学_数学_乘法巧算.json"
+    },
+    {
+      "grade": "小学",
+      "subject": "数学",
+      "file": "小学_数学_还原问题.json"
+    },
+    {
+      "grade": "小学",
+      "subject": "数学",
+      "file": "小学_数学_行程问题.json"
+    },
+    {
+      "grade": "小学",
+      "subject": "数学",
+      "file": "小学_数学_有序枚举.json"
     }
   ]
 }

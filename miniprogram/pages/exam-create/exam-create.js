@@ -10,6 +10,8 @@ const DAY_VALUES = [3, 5, 7, 10, 14];
 Page({
   data: {
     name: '',
+    targetDate: '',
+    today: '',
     modes: MODES,
     modeIndex: 0,
     dayOptions: DAY_OPTIONS,
@@ -25,6 +27,8 @@ Page({
   },
 
   onLoad() {
+    const now = new Date();
+    const today = now.getFullYear() + '-' + String(now.getMonth() + 1).padStart(2, '0') + '-' + String(now.getDate()).padStart(2, '0');
     const fileList = questionLoader.getDataFileList();
     const dataFiles = fileList.map(f => f.data).filter(Boolean);
     const catalog = questionLoader.buildCatalog(dataFiles);
@@ -33,12 +37,17 @@ Page({
     this.setData({
       catalog,
       grades: grades.length > 0 ? grades : GRADES_FALLBACK,
+      today,
       modules: [this._newModule(catalog, grades, 0)]
     });
   },
 
   onNameInput(e) {
     this.setData({ name: e.detail.value });
+  },
+
+  onDateChange(e) {
+    this.setData({ targetDate: e.detail.value });
   },
 
   onModeChange(e) {
@@ -156,6 +165,7 @@ Page({
     const plan = {
       id: 'exam_' + Date.now(),
       name,
+      targetDate: this.data.targetDate || '',
       mode,
       modules,
       createdAt: Date.now()

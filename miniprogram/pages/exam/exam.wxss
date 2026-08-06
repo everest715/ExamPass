@@ -1,6 +1,6 @@
 .container { padding: 20rpx 0 120rpx; }
 
-.exam-card { position: relative; }
+.exam-card { position: relative; padding-right: 120rpx; }
 .exam-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16rpx; }
 .exam-name { font-size: 34rpx; font-weight: bold; color: #333; }
 .exam-tag { font-size: 24rpx; padding: 6rpx 20rpx; border-radius: 20rpx; }
@@ -9,8 +9,13 @@
 .exam-info { display: flex; gap: 24rpx; }
 .exam-modules { font-size: 26rpx; color: #999; }
 .exam-progress { font-size: 26rpx; color: #FF6B35; }
+.exam-date { display: flex; align-items: center; gap: 8rpx; margin-top: 12rpx; }
+.exam-date-label { font-size: 24rpx; color: #999; }
+.exam-date-value { font-size: 24rpx; color: #333; font-weight: bold; }
+.exam-countdown { font-size: 24rpx; color: #FF6B35; }
+.exam-countdown.expired { color: #F44336; }
 .exam-delete {
-  position: absolute; top: 32rpx; right: 32rpx;
+  position: absolute; top: 50%; right: 32rpx; transform: translateY(-50%);
   font-size: 24rpx; color: #F44336; padding: 8rpx 16rpx;
 }
 

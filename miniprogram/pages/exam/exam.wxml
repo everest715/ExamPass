@@ -6,9 +6,15 @@
         <text class="exam-tag {{item.mode === 'sm2' ? 'tag-sm2' : 'tag-fixed'}}">{{item.mode === 'sm2' ? 'SM-2' : item.totalDays + '天计划'}}</text>
       </view>
       <view class="exam-info">
-        <text class="exam-modules">{{item.modules.length}}个模块</text>
+        <text class="exam-modules">{{item.modules.length}}个模块 · {{item.totalQuestions}}题</text>
         <text class="exam-progress" wx:if="{{item.mode === 'fixed'}}">第{{item.currentDay}}/{{item.totalDays}}天</text>
-        <text class="exam-progress" wx:if="{{item.mode === 'sm2'}}">{{item.dueCount || 0}}题待复习</text>
+        <text class="exam-progress" wx:if="{{item.mode === 'sm2'}}">{{item.dueCount}}题待复习</text>
+      </view>
+      <view class="exam-date" wx:if="{{item.targetDate}}">
+        <text class="exam-date-label">目标日期</text>
+        <text class="exam-date-value">{{item.targetDate}}</text>
+        <text class="exam-countdown" wx:if="{{item.daysLeft >= 0}}">（还剩{{item.daysLeft}}天）</text>
+        <text class="exam-countdown expired" wx:else>（已过期）</text>
       </view>
       <view class="exam-delete" catchtap="onDelete" data-id="{{item.id}}">删除</view>
     </view>

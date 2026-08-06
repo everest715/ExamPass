@@ -7,6 +7,13 @@
     </view>
 
     <view class="form-row">
+      <text class="form-label">目标日期</text>
+      <picker mode="date" value="{{targetDate}}" start="{{today}}" bindchange="onDateChange">
+        <view class="picker-value">{{targetDate || '请选择'}}<text class="picker-arrow">▼</text></view>
+      </picker>
+    </view>
+
+    <view class="form-row">
       <text class="form-label">练习模式</text>
       <picker mode="selector" range="{{modes}}" value="{{modeIndex}}" bindchange="onModeChange">
         <view class="picker-value">{{modes[modeIndex]}}<text class="picker-arrow">▼</text></view>

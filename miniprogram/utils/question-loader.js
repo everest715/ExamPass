@@ -6,11 +6,12 @@ const { instantiateTemplate } = require('./expr-engine');
 const REMOTE_BASE = 'https://everest715.github.io/ExamPass/data';
 
 // 本地题库版本（与 catalog.json version 同步，远程版本低于此值时忽略远程）
-const LOCAL_VERSION = '1.0.3';
+const LOCAL_VERSION = '1.0.4';
 
 // Storage 缓存 key
 const CACHE_KEY = 'exam_remote_cache';
 const CACHE_VERSION_KEY = 'exam_remote_version';
+const CACHE_FILES_KEY = 'exam_remote_files';
 
 // 模块级数据：initData 加载后存此，getDataFileList 优先使用
 let _loadedData = null;
@@ -93,10 +94,13 @@ function fetchRemoteData(callback) {
         return;
       }
 
-      // 版本与缓存一致，直接用缓存，跳过文件下载
+      // 版本与缓存一致且文件列表一致，直接用缓存，跳过文件下载
       const cachedVersion = wx.getStorageSync(CACHE_VERSION_KEY);
+      const cachedFiles = wx.getStorageSync(CACHE_FILES_KEY);
       const cachedData = wx.getStorageSync(CACHE_KEY);
-      if (remoteVersion === cachedVersion && cachedData && cachedData.length > 0) {
+      const remoteFileNames = filesToLoad.map(f => f.file).sort().join(',');
+      const cachedFileNames = (cachedFiles || []).sort().join(',');
+      if (remoteVersion === cachedVersion && cachedData && cachedData.length > 0 && remoteFileNames === cachedFileNames) {
         console.log('[question-loader] 远程版本与缓存一致，跳过下载，使用缓存');
         callback(true, cachedData);
         return;
@@ -126,6 +130,7 @@ function fetchRemoteData(callback) {
                 try {
                   wx.setStorageSync(CACHE_KEY, loaded);
                   wx.setStorageSync(CACHE_VERSION_KEY, remoteVersion);
+                  wx.setStorageSync(CACHE_FILES_KEY, filesToLoad.map(f => f.file));
                 } catch (e) {}
                 console.log('[question-loader] 远程加载完成:', loaded.length, '/', filesToLoad.length, '个文件');
               }

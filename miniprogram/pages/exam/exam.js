@@ -17,21 +17,34 @@ Page({
     const fileList = questionLoader.getDataFileList();
 
     for (const p of plans) {
-      if (p.mode === 'sm2') {
-        let dueCount = 0;
-        for (const m of p.modules) {
-          const match = fileList.find(f => f.grade === m.grade && f.subject === m.subject);
-          if (!match) continue;
-          let qs = match.data.questions || [];
-          if (m.chapters && m.chapters.length > 0) {
-            qs = qs.filter(q => m.chapters.includes(q.chapter));
-          }
-          for (const q of qs) {
-            const rec = records[q.id];
-            if (!rec || !rec.sm2 || isDue(rec.sm2)) dueCount++;
+      let totalQuestions = 0;
+      let dueCount = 0;
+
+      for (const m of p.modules) {
+        let qs = [];
+        for (const f of fileList) {
+          if (f.grade === m.grade && f.subject === m.subject) {
+            qs = qs.concat(f.data.questions || []);
           }
         }
-        p.dueCount = dueCount;
+        if (m.chapters && m.chapters.length > 0) {
+          qs = qs.filter(q => m.chapters.includes(q.chapter));
+        }
+        totalQuestions += qs.length;
+        for (const q of qs) {
+          const rec = records[q.id];
+          if (!rec || !rec.sm2 || isDue(rec.sm2)) dueCount++;
+        }
+      }
+
+      p.totalQuestions = totalQuestions;
+      p.dueCount = dueCount;
+
+      // 计算距离目标日期的天数
+      if (p.targetDate) {
+        const target = new Date(p.targetDate + 'T23:59:59');
+        const now = new Date();
+        p.daysLeft = Math.ceil((target - now) / 86400000);
       }
     }
 

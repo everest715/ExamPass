@@ -97,7 +97,7 @@ Page({
         const rec = records[q.id];
         return !rec || !rec.sm2 || isDue(rec.sm2);
       });
-      selected = shuffle(dueQuestions).slice(0, 20);
+      selected = shuffle(dueQuestions);
     } else if (examMode && examMode.mode === 'fixed') {
       // fixed 模式：按天数分配当日题量
       const perDay = Math.ceil(allQuestions.length / examMode.totalDays);

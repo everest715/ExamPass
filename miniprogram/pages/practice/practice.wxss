@@ -36,11 +36,12 @@
   border: 4rpx solid #DDD; border-radius: 16rpx; padding: 24rpx;
   font-size: 32rpx; margin-top: 20rpx;
 }
-.fill-inline { display: flex; flex-wrap: wrap; align-items: center; }
-.fill-text { font-size: 34rpx; line-height: 1.8; }
+.fill-inline { line-height: 2.4; }
+.fill-text { font-size: 34rpx; }
 .fill-input-inline {
   border: 4rpx solid #DDD; border-radius: 8rpx; padding: 4rpx 16rpx;
   font-size: 32rpx; width: 120rpx; margin: 0 8rpx;
+  display: inline-block; vertical-align: middle;
 }
 .fill-input-inline.blank-correct { border-color: #4CAF50; background: #F0FBF0; }
 .fill-input-inline.blank-wrong { border-color: #F44336; background: #FFF0F0; }

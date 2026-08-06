@@ -56,7 +56,11 @@ function getLocalData() {
   const files = [];
   const registry = [
     { grade: '小学', subject: '数学', loader: () => require('../data/小学_数学_盈亏问题.js') },
-    { grade: '小学', subject: '数学', loader: () => require('../data/小学_数学_归一问题.js') }
+    { grade: '小学', subject: '数学', loader: () => require('../data/小学_数学_归一问题.js') },
+    { grade: '小学', subject: '数学', loader: () => require('../data/小学_数学_乘法巧算.js') },
+    { grade: '小学', subject: '数学', loader: () => require('../data/小学_数学_还原问题.js') },
+    { grade: '小学', subject: '数学', loader: () => require('../data/小学_数学_行程问题.js') },
+    { grade: '小学', subject: '数学', loader: () => require('../data/小学_数学_有序枚举.js') }
   ];
   for (const f of registry) {
     try {
